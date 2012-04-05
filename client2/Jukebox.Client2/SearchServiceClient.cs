@@ -1,0 +1,29 @@
+﻿using System;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using System.ServiceModel;
+
+namespace Jukebox.Client2.JukeboxService
+{
+    public partial class SearchServiceClient : IDisposable
+    {
+        void IDisposable.Dispose()
+        {
+            if (this.State == CommunicationState.Faulted)
+            {
+                this.Abort();
+            }
+            else
+            {
+                this.CloseAsync();
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Jukebox.Client2.RefreshButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="200" d:DesignWidth="200" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave"
+             MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp">
+    
+    <UserControl.Resources>
+        <Storyboard x:Key="Storyboard1">
+            <DoubleAnimation Storyboard.TargetName="Transform1" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:1"
+                RepeatBehavior="Forever"/>
+        </Storyboard>
+        <SolidColorBrush Color="LightBlue" x:Key="NormalBrush" />
+        <SolidColorBrush Color="White" x:Key="HoverBrush" />
+        <SolidColorBrush Color="Aquamarine" x:Key="DownBrush" />
+    </UserControl.Resources>
+    
+    <Grid x:Name="LayoutRoot">
+        <Canvas Width="200" Height="200">
+            <Ellipse x:Name="Ellipse1" Width="200" Height="200" Fill="LightBlue" />
+            <Path Stroke="Black" StrokeThickness="20" Data="M 80,30 C 0,20 0,180 80,170"
+                Width="200" Height="200"/>
+            <Path Stroke="Black" StrokeThickness="1" Data="M 70,0 L 100,30 70,60" Width="200" Height="200" Fill="Black" />
+            <Path Stroke="Black" StrokeThickness="20" Data="M 120,30 C 200,20 200,180 120,170"
+                Width="200" Height="200"/>
+            <Path Stroke="Black" StrokeThickness="1" Data="M 130,140 L 100,170 130,200" Width="200" Height="200" Fill="Black" />
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    
+                    <RotateTransform x:Name="Transform1" CenterX="100" CenterY="100" />
+                    <ScaleTransform ScaleX="0.1" ScaleY="0.1" />
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            
+        </Canvas>
+    </Grid>
+</UserControl>

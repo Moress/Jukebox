@@ -1,0 +1,47 @@
+﻿<navigation:Page
+	x:Class="Jukebox.Client.Views.Pages.Search"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
+	xmlns:jviewmodels="clr-namespace:Jukebox.Client.ViewModels"
+	xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+	mc:Ignorable="d"
+	d:DesignWidth="640"
+	d:DesignHeight="480">
+
+	<UserControl.Resources>
+		<jviewmodels:Search
+			x:Key="searchViewModel" />
+	</UserControl.Resources>
+
+	<toolkit:DockPanel>
+        <TextBlock Name="MessageTextBlock" FontWeight="Bold" toolkit:DockPanel.Dock="Top" />
+		<TextBox
+			x:Name="Query"
+			KeyDown="Query_KeyDown"
+			toolkit:DockPanel.Dock="Top" />
+		<ListBox
+			ItemsSource="{Binding Source={StaticResource searchViewModel}, Path=SearchResults}" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel
+						Orientation="Horizontal">
+						<Button Content="+" Click="Button_Click" Tag="{Binding}" />
+						<StackPanel
+							Margin="10">
+							<TextBlock
+								Text="{Binding Singer}"
+								FontWeight="Bold" />
+							<TextBlock
+								Text="{Binding Title}" />
+							<TextBlock
+								Text="{Binding Duration}" />
+						</StackPanel>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</toolkit:DockPanel>
+</navigation:Page>

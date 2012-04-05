@@ -1,0 +1,44 @@
+﻿<navigation:Page
+	x:Class="Jukebox.Client.Views.Pages.Playlist"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
+	xmlns:jviewmodels="clr-namespace:Jukebox.Client.ViewModels"
+	xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+	mc:Ignorable="d"
+	d:DesignWidth="640"
+	d:DesignHeight="480"
+	Title="Playlist Page">
+
+	<UserControl.Resources>
+		<jviewmodels:Playlist
+			x:Key="playlistViewModel" />
+	</UserControl.Resources>
+
+	<toolkit:DockPanel>
+        <StackPanel Orientation="Horizontal" toolkit:DockPanel.Dock="Top">
+            <TextBlock>Now playing: </TextBlock>
+            <TextBlock Name="NowPlayingTextBlock" />
+            <Button Margin="10,0,0,0" Content="Refresh" Click="OnRefreshNowPlayingButtonClicked" />
+        </StackPanel>
+		<ListBox
+			ItemsSource="{Binding Source={StaticResource playlistViewModel}, Path=Tracks}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel
+						Margin="10">
+						<TextBlock
+							Text="{Binding Singer}"
+							FontWeight="Bold" />
+						<TextBlock
+							Text="{Binding Title}" />
+						<TextBlock
+							Text="{Binding Duration}" />
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</toolkit:DockPanel>
+</navigation:Page>

@@ -1,0 +1,15 @@
+﻿<xapCache source="C:\Jukebox\client2\Jukebox.Client2\Bin\Debug\Jukebox.Client2.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="05.04.2012 9:49:14">
+  <file source="C:\Jukebox\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.dll" archivePath="Jukebox.Client2.dll" lastWriteTime="05.04.2012 9:49:13" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.ServiceModel.Extensions.dll" archivePath="System.ServiceModel.Extensions.dll" lastWriteTime="26.08.2010 2:17:48" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.ServiceModel.NetTcp.dll" archivePath="System.ServiceModel.NetTcp.dll" lastWriteTime="26.08.2010 2:17:48" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.ServiceModel.PollingDuplex.dll" archivePath="System.ServiceModel.PollingDuplex.dll" lastWriteTime="26.08.2010 2:17:48" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Windows.Controls.dll" archivePath="System.Windows.Controls.dll" lastWriteTime="26.08.2010 2:17:48" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Toolkit\Apr10\Bin\System.Windows.Controls.Toolkit.dll" archivePath="System.Windows.Controls.Toolkit.dll" lastWriteTime="13.04.2010 20:15:14" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Toolkit\Apr10\Bin\System.Windows.Controls.Toolkit.Internals.dll" archivePath="System.Windows.Controls.Toolkit.Internals.dll" lastWriteTime="13.04.2010 19:59:48" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.ServiceModel.Extensions.resources.dll" archivePath="ru\System.ServiceModel.Extensions.resources.dll" lastWriteTime="26.08.2010 5:33:36" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.ServiceModel.NetTcp.resources.dll" archivePath="ru\System.ServiceModel.NetTcp.resources.dll" lastWriteTime="26.08.2010 5:33:36" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.ServiceModel.PollingDuplex.resources.dll" archivePath="ru\System.ServiceModel.PollingDuplex.resources.dll" lastWriteTime="26.08.2010 5:33:36" />
+  <file source="C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.Windows.Controls.resources.dll" archivePath="ru\System.Windows.Controls.resources.dll" lastWriteTime="26.08.2010 5:33:38" />
+  <file source="C:\Jukebox\client2\Jukebox.Client2\ServiceReferences.ClientConfig" archivePath="ServiceReferences.ClientConfig" lastWriteTime="03.04.2012 13:38:06" />
+  <file source="C:\Jukebox\client2\Jukebox.Client2\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="04.04.2012 14:29:04" />
+</xapCache>

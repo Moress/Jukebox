@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Jukebox.Client2.SearchResultsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:my="clr-namespace:Jukebox.Client2"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <my:TrackIsAddedToVisibilityConverter x:Key="trackIsAddedToVisibilityConverter" />
+        <my:TrackSourceToBrushConverter x:Key="trackSourceToBrushConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <ListBox ItemsSource="{Binding FoundTracks}">
+            <ListBox.ItemTemplate >
+                <DataTemplate>
+                    <Grid Background="{Binding Source, Converter={StaticResource trackSourceToBrushConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="10" Grid.Column="1">
+                            <TextBlock
+								Text="{Binding Singer}"
+								FontWeight="Bold" />
+                            <TextBlock
+								Text="{Binding Title}" />
+                            <TextBlock
+								Text="{Binding Duration}" />
+                            <TextBlock
+                                Text="{Binding Source}" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                        <Button Content="+" Tag="{Binding}" Click="OnAddButtonClick" Grid.Column="0"
+                                Visibility="{Binding IsAdded, Converter={StaticResource trackIsAddedToVisibilityConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </Grid>
+</UserControl>

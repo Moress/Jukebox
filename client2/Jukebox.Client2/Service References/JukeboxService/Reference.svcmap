@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="82ff220d-e7f0-4244-aefa-8cfbf406c02b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.ObjectModel.ObservableCollection`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>false</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8080/Metadata" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Metadata.xsd" MetadataType="Schema" ID="4b47e8f5-97ce-44fa-8136-587e7711090d" SourceId="1" SourceUrl="http://localhost:8080/Metadata?xsd=xsd2" />
+    <MetadataFile FileName="Metadata1.xsd" MetadataType="Schema" ID="04e37aed-4dc4-4667-b4d9-087b8bc52d7b" SourceId="1" SourceUrl="http://localhost:8080/Metadata?xsd=xsd1" />
+    <MetadataFile FileName="JukeboxService.wsdl" MetadataType="Wsdl" ID="576efdee-86d4-4cbe-86b6-d475bd99e657" SourceId="1" SourceUrl="http://localhost:8080/Metadata" />
+    <MetadataFile FileName="Metadata2.xsd" MetadataType="Schema" ID="6edb8319-f344-40f6-9e0f-c6144690c31c" SourceId="1" SourceUrl="http://localhost:8080/Metadata?xsd=xsd3" />
+    <MetadataFile FileName="Metadata3.xsd" MetadataType="Schema" ID="5eb75da1-8ddc-42cf-baf0-b055887ac011" SourceId="1" SourceUrl="http://localhost:8080/Metadata?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

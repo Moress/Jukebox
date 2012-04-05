@@ -1,0 +1,7 @@
+C:\Jukebox\trunk\Binaries\Jukebox.Server.exe.config
+C:\Jukebox\trunk\Binaries\clientaccesspolicy.xml
+C:\Jukebox\trunk\Binaries\Jukebox.Server.exe
+C:\Jukebox\trunk\Binaries\Jukebox.Server.pdb
+C:\Jukebox\trunk\Sources\Server\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Jukebox\trunk\Sources\Server\obj\x86\Debug\Jukebox.Server.exe
+C:\Jukebox\trunk\Sources\Server\obj\x86\Debug\Jukebox.Server.pdb

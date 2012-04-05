@@ -1,0 +1,28 @@
+﻿<navigation:Page
+	x:Class="Jukebox.Client.Views.Pages.Settings"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:jviewmodels="clr-namespace:Jukebox.Client.ViewModels"
+	xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+	mc:Ignorable="d"
+	d:DesignWidth="640"
+	d:DesignHeight="480"
+	Title="Settings Page">
+	
+	<UserControl.Resources>
+		<jviewmodels:Settings
+			x:Key="settingsViewModel" />
+	</UserControl.Resources>
+	
+	<StackPanel>
+		<TextBox 
+			x:Name="Host"
+			Text="{Binding Path=Host, Mode=TwoWay, Source={StaticResource settingsViewModel}}" />
+		<Button Name="ApplyButton"
+			Content="Apply"
+			Click="OnApplyButtonClicked" />
+        <ListBox Name="LogListBox" />
+	</StackPanel>
+</navigation:Page>

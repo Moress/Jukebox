@@ -1,0 +1,31 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <customBinding>
+                <binding name="NetTcpBinding_IPlayerService">
+                    <binaryMessageEncoding />
+                    <tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+                <binding name="NetTcpBinding_IPlaylistService">
+                    <binaryMessageEncoding />
+                    <tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+                <binding name="NetTcpBinding_ISearchService">
+                    <binaryMessageEncoding />
+                    <tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+            </customBinding>
+        </bindings>
+        <client>
+            <endpoint address="net.tcp://localhost:4502/Player" binding="customBinding"
+                bindingConfiguration="NetTcpBinding_IPlayerService" contract="JukeboxService.IPlayerService"
+                name="NetTcpBinding_IPlayerService" />
+            <endpoint address="net.tcp://localhost:4502/Playlist" binding="customBinding"
+                bindingConfiguration="NetTcpBinding_IPlaylistService" contract="JukeboxService.IPlaylistService"
+                name="NetTcpBinding_IPlaylistService" />
+            <endpoint address="net.tcp://localhost:4502/Search" binding="customBinding"
+                bindingConfiguration="NetTcpBinding_ISearchService" contract="JukeboxService.ISearchService"
+                name="NetTcpBinding_ISearchService" />
+        </client>
+    </system.serviceModel>
+</configuration>

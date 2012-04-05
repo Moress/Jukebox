@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="JukeboxService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IPlayerService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="NetTcpBinding_IPlaylistService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="NetTcpBinding_ISearchService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:8080/Metadata?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:8080/Metadata?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8080/Metadata?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Jukebox.Server.Models" />
+      <xsd:import schemaLocation="http://localhost:8080/Metadata?xsd=xsd3" namespace="http://schemas.microsoft.com/Message" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPlayerService_GetCurrentTrack_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentTrack" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_GetCurrentTrack_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentTrackResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_GetVolumeLevel_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVolumeLevel" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_GetVolumeLevel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVolumeLevelResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_SetVolumeLevel_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetVolumeLevel" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_SetVolumeLevel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetVolumeLevelResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPlayerService_OnCurrentTrackChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnCurrentTrackChanged" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_GetPlaylist_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlaylist" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_GetPlaylist_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlaylistResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_Add_InputMessage">
+    <wsdl:part name="parameters" element="tns:Add" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_Remove_InputMessage">
+    <wsdl:part name="parameters" element="tns:Remove" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_Next_InputMessage">
+    <wsdl:part name="parameters" element="tns:Next" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_Next_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NextResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_OnTrackAdded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnTrackAdded" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_OnTrackRemoved_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnTrackRemoved" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_OnTrackStateChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnTrackStateChanged" />
+  </wsdl:message>
+  <wsdl:message name="ISearchService_Search_InputMessage">
+    <wsdl:part name="parameters" element="tns:Search" />
+  </wsdl:message>
+  <wsdl:message name="ISearchService_Search_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPolicyService_GetSilverlightPolicy_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSilverlightPolicy" />
+  </wsdl:message>
+  <wsdl:message name="IPolicyService_GetSilverlightPolicy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSilverlightPolicyResponse" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IPlayerService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetCurrentTrack">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlayerService/GetCurrentTrack" message="tns:IPlayerService_GetCurrentTrack_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlayerService/GetCurrentTrackResponse" message="tns:IPlayerService_GetCurrentTrack_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetVolumeLevel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlayerService/GetVolumeLevel" message="tns:IPlayerService_GetVolumeLevel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlayerService/GetVolumeLevelResponse" message="tns:IPlayerService_GetVolumeLevel_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetVolumeLevel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlayerService/SetVolumeLevel" message="tns:IPlayerService_SetVolumeLevel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlayerService/SetVolumeLevelResponse" message="tns:IPlayerService_SetVolumeLevel_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnCurrentTrackChanged">
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlayerService/OnCurrentTrackChanged" message="tns:IPlayerService_OnCurrentTrackChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType msc:usingSession="true" name="IPlaylistService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPlaylist">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/GetPlaylist" message="tns:IPlaylistService_GetPlaylist_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/GetPlaylistResponse" message="tns:IPlaylistService_GetPlaylist_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Add">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/Add" message="tns:IPlaylistService_Add_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Remove">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/Remove" message="tns:IPlaylistService_Remove_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Next">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/Next" message="tns:IPlaylistService_Next_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/NextResponse" message="tns:IPlaylistService_Next_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTrackAdded">
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/OnTrackAdded" message="tns:IPlaylistService_OnTrackAdded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTrackRemoved">
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/OnTrackRemoved" message="tns:IPlaylistService_OnTrackRemoved_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTrackStateChanged">
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/OnTrackStateChanged" message="tns:IPlaylistService_OnTrackStateChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType msc:usingSession="true" name="ISearchService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Search">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISearchService/Search" message="tns:ISearchService_Search_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISearchService/SearchResponse" message="tns:ISearchService_Search_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IPolicyService">
+    <wsdl:operation name="GetSilverlightPolicy">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPolicyService/GetSilverlightPolicy" message="tns:IPolicyService_GetSilverlightPolicy_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPolicyService/GetSilverlightPolicyResponse" message="tns:IPolicyService_GetSilverlightPolicy_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IPlayerService" type="tns:IPlayerService">
+    <wsp:PolicyReference URI="#NetTcpBinding_IPlayerService_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="GetCurrentTrack">
+      <soap12:operation soapAction="http://tempuri.org/IPlayerService/GetCurrentTrack" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVolumeLevel">
+      <soap12:operation soapAction="http://tempuri.org/IPlayerService/GetVolumeLevel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetVolumeLevel">
+      <soap12:operation soapAction="http://tempuri.org/IPlayerService/SetVolumeLevel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnCurrentTrackChanged">
+      <soap12:operation soapAction="http://tempuri.org/IPlayerService/OnCurrentTrackChanged" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="NetTcpBinding_IPlaylistService" type="tns:IPlaylistService">
+    <wsp:PolicyReference URI="#NetTcpBinding_IPlaylistService_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="GetPlaylist">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/GetPlaylist" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/Add" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Remove">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/Remove" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Next">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/Next" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnTrackAdded">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/OnTrackAdded" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnTrackRemoved">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/OnTrackRemoved" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnTrackStateChanged">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/OnTrackStateChanged" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="NetTcpBinding_ISearchService" type="tns:ISearchService">
+    <wsp:PolicyReference URI="#NetTcpBinding_ISearchService_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="Search">
+      <soap12:operation soapAction="http://tempuri.org/ISearchService/Search" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="JukeboxService">
+    <wsdl:port name="NetTcpBinding_IPlayerService" binding="tns:NetTcpBinding_IPlayerService">
+      <soap12:address location="net.tcp://localhost:4502/Player" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:4502/Player</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="NetTcpBinding_IPlaylistService" binding="tns:NetTcpBinding_IPlaylistService">
+      <soap12:address location="net.tcp://localhost:4502/Playlist" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:4502/Playlist</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="NetTcpBinding_ISearchService" binding="tns:NetTcpBinding_ISearchService">
+      <soap12:address location="net.tcp://localhost:4502/Search" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:4502/Search</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
