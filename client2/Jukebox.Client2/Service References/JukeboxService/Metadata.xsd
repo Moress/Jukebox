@@ -5,6 +5,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Duration" type="ser:duration" />
       <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PlayPosition" type="ser:duration" />
       <xs:element minOccurs="0" name="Singer" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Source" type="tns:TrackSource" />
       <xs:element minOccurs="0" name="State" type="tns:TrackState" />

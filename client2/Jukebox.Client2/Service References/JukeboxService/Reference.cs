@@ -24,6 +24,8 @@ namespace Jukebox.Client2.JukeboxService {
         
         private string IdField;
         
+        private System.TimeSpan PlayPositionField;
+        
         private string SingerField;
         
         private Jukebox.Client2.JukeboxService.TrackSource SourceField;
@@ -56,6 +58,19 @@ namespace Jukebox.Client2.JukeboxService {
                 if ((object.ReferenceEquals(this.IdField, value) != true)) {
                     this.IdField = value;
                     this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.TimeSpan PlayPosition {
+            get {
+                return this.PlayPositionField;
+            }
+            set {
+                if ((this.PlayPositionField.Equals(value) != true)) {
+                    this.PlayPositionField = value;
+                    this.RaisePropertyChanged("PlayPosition");
                 }
             }
         }

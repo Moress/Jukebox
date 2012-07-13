@@ -3,6 +3,7 @@ namespace Jukebox.Server.Services {
 	using System.Collections.Generic;
 	using System.Collections.Specialized;
 	using System.IO;
+    using System;
 	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Web;
@@ -59,7 +60,7 @@ namespace Jukebox.Server.Services {
         /// <summary>
         /// Количество голосов, необходимое для пропуска.
         /// </summary>
-        const int VOTES_TO_SKIP = 4;
+        const int VOTES_TO_SKIP = 2;
 
         public string Next()
         {

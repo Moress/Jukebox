@@ -52,7 +52,7 @@ namespace Jukebox.Client2
             PlaylistControl1.DataContext = _model;
 
             _mainTimer.Tick += new EventHandler(OnMainTimerTick);
-            _mainTimer.Interval = new TimeSpan(0, 0, 0,0,100);
+            _mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
             _mainTimer.Start();
 
             // Сразу запускаем

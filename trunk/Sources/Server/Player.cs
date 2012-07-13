@@ -8,6 +8,7 @@ namespace Jukebox.Server {
 	using System.Threading;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Timers;
 	using IrrKlang;
 	using Jukebox.Server.DataProviders;
 	using Jukebox.Server.Models;
@@ -17,9 +18,15 @@ namespace Jukebox.Server {
 			Instance = this;
 			Engine = new ISoundEngine(SoundOutputDriver.AutoDetect, SoundEngineOptionFlag.DefaultOptions, deviceID);
 			Playlist = new Playlist();
+            volumeChangedTreshold = 0;
+            volumeChangeTimer = new System.Timers.Timer();
+            volumeChangeTimer.AutoReset = true;
+            volumeChangeTimer.Elapsed += new ElapsedEventHandler(OnVolumeChangeTimerElapsed);
+            volumeChangeTimer.Interval = 10000;
+      
 			//Playlist.Tracks.CollectionChanged += OnPlaylistChanged;
 			new Thread(() => {
-				while (true) { PlayerThread(); Thread.Sleep(1000); }
+				while (true) { PlayerThread(); Thread.Sleep(250); }
 			}).Start();
 		}
 
@@ -31,11 +38,22 @@ namespace Jukebox.Server {
 				TrackChanged(this, new PlayerEventArgs() { Track = track });
 				Playlist.Tracks.Remove(track);
 				CurrentTrack = track;
+                CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds(0);
                 CurrentISound = Engine.Play2D(@Context.GetInstance().CacheDir + track.GetHash() + ".mp3");
 			}
             else if (!isPlaying)
             {
                 CurrentTrack = null;
+            }
+            else if (isPlaying)
+            {
+                CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds((double)CurrentISound.PlayPosition);
+            }
+
+            foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Failed))
+            {
+                Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Failed track has been removed: " + t);
+                Playlist.Tracks.Remove(t);
             }
 
 			foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Unknown)) {
@@ -69,6 +87,12 @@ namespace Jukebox.Server {
 			}
 		}
 
+        private static void OnVolumeChangeTimerElapsed(object source, ElapsedEventArgs e)
+        {
+            Player.Instance.volumeChangedTreshold = 0;
+            Player.Instance.volumeChangeTimer.Enabled = false;
+        }
+
 		/*private void OnPlaylistChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (e.NewItems == null) return;
 
@@ -78,7 +102,7 @@ namespace Jukebox.Server {
 				new Thread(() => {
 					byte[] data = DataProviderManager.Instance.Download(track);
 					File.WriteAllBytes(@"c:\temp\jukebox\" + track.Id + ".mp3", data);
-					track.State = TrackState.Ready;
+					track.State C:\Jukebox\repo\trunk\Sources\Server\DataProviders\VKComDataProvider.cs= TrackState.Ready;
 					Debug.Print("Track ready: " + track);
 				}).Start();
 			}
@@ -87,6 +111,7 @@ namespace Jukebox.Server {
 		public event EventHandler<PlayerEventArgs> TrackChanged;
 		public event EventHandler<PlayerEventArgs> TrackStateChanged;
         
+        public const double VOLUME_TRESHOLD = 15;
 		public static Player Instance { get; private set; }
 		public Track CurrentTrack { get; private set; }
 		public Playlist Playlist { get; set; }
@@ -97,15 +122,28 @@ namespace Jukebox.Server {
             }
             set
             {
-                if ((float)(value) != Engine.SoundVolume)
+                if (volumeChangedTreshold < VOLUME_TRESHOLD)
                 {
-                    Engine.SoundVolume = (float)(value);
+                    volumeChangedTreshold += Math.Abs(Engine.SoundVolume - value);
+                    if ((float)(value) != Engine.SoundVolume)
+                    {
+                        Engine.SoundVolume = (float)(value);
+                    }
+                }
+                else
+                {
+                    if (volumeChangeTimer.Enabled != true)
+                    {
+                        volumeChangeTimer.Enabled = true;
+                    }
                 }
             }
         }
 		
 		private ISoundEngine Engine { get; set; }
 		private ISound CurrentISound { get; set; }
+        private System.Timers.Timer volumeChangeTimer;
+        private double volumeChangedTreshold;
 
         /// <summary>
         /// Прерывает воспроизведение текущей песни.
@@ -115,5 +153,6 @@ namespace Jukebox.Server {
             if (CurrentISound != null)
                 CurrentISound.Stop();
         }
-	}
+
+    }
 }

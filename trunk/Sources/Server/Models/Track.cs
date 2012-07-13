@@ -28,6 +28,9 @@ namespace Jukebox.Server.Models {
         [DataMember]
         public TrackSource Source { get; set; }
 
+        [DataMember]
+        public TimeSpan PlayPosition { get; set; }
+
         /*[DataMember]
         public bool IsCached { get; set; }*/
 

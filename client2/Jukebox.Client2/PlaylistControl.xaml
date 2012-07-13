@@ -21,11 +21,13 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel
 						    Margin="10" Grid.Column="1">
-                            <TextBlock
+                            <TextBox
 							    Text="{Binding Singer}"
-							    FontWeight="Bold" />
-                            <TextBlock
-							    Text="{Binding Title}" />
+							    FontWeight="Bold"
+                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                            <TextBox
+							    Text="{Binding Title}" 
+                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
                             <TextBlock
 							    Text="{Binding Duration}" />
                             <TextBlock

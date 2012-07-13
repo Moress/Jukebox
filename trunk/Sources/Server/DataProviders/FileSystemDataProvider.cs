@@ -54,8 +54,11 @@ namespace Jukebox.Server.DataProviders {
                     track.Duration = tmp;
                     track.Source = TrackSource.Cache;
                     result.Add(track);
-
                 }
+
+                var filteredResults = (from track in result
+                                       select track).Reverse().Take(200);
+                result = filteredResults.ToList();
             }
             catch
             {

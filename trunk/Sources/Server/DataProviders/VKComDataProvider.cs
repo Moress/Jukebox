@@ -11,6 +11,7 @@ using System.Web;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 namespace Jukebox.Server.DataProviders
 {
@@ -26,6 +27,18 @@ namespace Jukebox.Server.DataProviders
             var result = new List<Track>();
             try
             {
+                Ping pinger = new Ping();
+                PingOptions pingerOptions = new PingOptions(255, true);
+                string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(data);
+                int timeout = 2000;
+                string hostName = @"vk.com";
+                PingReply reply = pinger.Send(hostName, timeout, buffer, pingerOptions);
+                if (reply.Status != IPStatus.Success)
+                {
+                    return new ReadOnlyCollection<Track>(result);
+                }
+
                 if (_cookie == null)
                 {
                     var res = Auth(LOGIN, PASSWORD, out _cookie);

@@ -3,6 +3,17 @@
              x:Class="Jukebox.Client2.App"
              >
     <Application.Resources>
-        
+        <Style x:Key="TextBoxReadOnlyStyle" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid x:Name="RootElement">
+                            <ScrollViewer x:Name="ContentElement" Background="Transparent" Padding="{TemplateBinding Padding}" BorderThickness="0"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
     </Application.Resources>
 </Application>

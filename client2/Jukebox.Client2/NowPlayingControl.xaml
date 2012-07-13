@@ -9,7 +9,8 @@
     d:DesignHeight="300" d:DesignWidth="400">
 
     <UserControl.Resources>
-        <my:TrackToStringTitleConverter x:Key="trackToStringTitleConverter" />
+        <my:TimeValuesToStringConverter x:Key="timeValuesToStringConverter" />
+        <my:TrackToStringConverter x:Key="trackToStringConverter" />
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
@@ -28,11 +29,13 @@
             <my:RefreshButton Width="20" Height="20" Margin="0,0,5,0" x:Name="RefreshButton1" />
             <my:NextButton Width="20" Height="20" Margin="0,0,10,0" x:Name="NextButton1" />
 
-            <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Singer}" />
+            <TextBox VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Singer}" Style="{StaticResource TextBoxReadOnlyStyle}"/>
             <TextBlock Margin="10,0,0,0" />
-            <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource trackToStringTitleConverter}}" MaxWidth="500" TextTrimming="WordEllipsis"/>
+            <TextBox VerticalAlignment="Center" Text="{Binding Title}" MaxWidth="400" Style="{StaticResource TextBoxReadOnlyStyle}"/>
+            <TextBlock Margin="10,0,0,0" />
+            <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource timeValuesToStringConverter}}"/>
             
-            <Slider toolkit:DockPanel.Dock="Right" Height="23" Name="VolumeSlider" Width="100" Minimum="0.2" Maximum="1" />
+            <Slider toolkit:DockPanel.Dock="Right" Height="23" Name="VolumeSlider" Width="100" Minimum="0.2" Maximum="1" SmallChange="0.01"/>
             <TextBlock toolkit:DockPanel.Dock="Right" Margin="10,0,0,0" VerticalAlignment="Center" Name="VolumeLevel"/>
             
         </toolkit:DockPanel>
