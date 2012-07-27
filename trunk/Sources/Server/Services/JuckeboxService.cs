@@ -44,6 +44,23 @@ namespace Jukebox.Server.Services {
 			return Player.Instance.Playlist;
 		}
 
+        public void SetPlaylist(Playlist playlist) {
+            foreach (Track t1 in Player.Instance.Playlist.Tracks)
+            {
+                string hashT1 = t1.GetHash();
+                for (int i = 0; i < playlist.Tracks.Count; i ++)
+                {
+                    Track t2 = playlist.Tracks[i];
+                    string hashT2 = t2.GetHash();
+                    if (hashT1 == hashT2)
+                    {
+                        playlist.Tracks[i] = t1;
+                    }
+                }
+            }
+            Player.Instance.Playlist = playlist;
+        }
+
 		public void Add(Track track) {
 			Player.Instance.Playlist.Tracks.Add(track);
 		}
@@ -56,11 +73,6 @@ namespace Jukebox.Server.Services {
         /// Голоса за пропуск этой песни.
         /// </summary>
         private Dictionary<string, bool> _nextVotes = new Dictionary<string,bool>();
-
-        /// <summary>
-        /// Количество голосов, необходимое для пропуска.
-        /// </summary>
-        const int VOTES_TO_SKIP = 2;
 
         public string Next()
         {
@@ -87,12 +99,12 @@ namespace Jukebox.Server.Services {
 
             int votes = _nextVotes.Count;
 
-            if (votes == VOTES_TO_SKIP)
+            if (votes == Context.VOTES_TO_SKIP)
             {
                 Player.Instance.Abort();
             }
 
-            return string.Format("Проголосовало {0} из {1}.", votes, VOTES_TO_SKIP);
+            return string.Format("Проголосовало {0} из {1}.", votes, Context.VOTES_TO_SKIP);
         }
 
 		// IPlayerService --------------------------------------------------------------------------

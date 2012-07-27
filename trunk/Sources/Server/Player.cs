@@ -1,6 +1,8 @@
 ﻿
 namespace Jukebox.Server {
 	using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 	using System.Collections.Specialized;
 	using System.Diagnostics;
 	using System.IO;
@@ -50,7 +52,9 @@ namespace Jukebox.Server {
                 CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds((double)CurrentISound.PlayPosition);
             }
 
-            foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Failed))
+            List<Track> tracksToRemove = Playlist.Tracks.Where(x => x.State == TrackState.Failed).ToList<Track>();
+
+            foreach (Track t in tracksToRemove)
             {
                 Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Failed track has been removed: " + t);
                 Playlist.Tracks.Remove(t);

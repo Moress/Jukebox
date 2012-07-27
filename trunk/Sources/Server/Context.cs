@@ -7,6 +7,8 @@ namespace Jukebox.Server
 {
     class Context
     {
+        public const int VOTES_TO_SKIP = 4;
+
         // Path to cache
         string cacheDir;
         public string CacheDir

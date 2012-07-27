@@ -59,6 +59,12 @@
   <wsdl:message name="IPlaylistService_GetPlaylist_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetPlaylistResponse" />
   </wsdl:message>
+  <wsdl:message name="IPlaylistService_SetPlaylist_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetPlaylist" />
+  </wsdl:message>
+  <wsdl:message name="IPlaylistService_SetPlaylist_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetPlaylistResponse" />
+  </wsdl:message>
   <wsdl:message name="IPlaylistService_Add_InputMessage">
     <wsdl:part name="parameters" element="tns:Add" />
   </wsdl:message>
@@ -113,6 +119,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPlaylist">
       <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/GetPlaylist" message="tns:IPlaylistService_GetPlaylist_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/GetPlaylistResponse" message="tns:IPlaylistService_GetPlaylist_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetPlaylist">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/SetPlaylist" message="tns:IPlaylistService_SetPlaylist_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPlaylistService/SetPlaylistResponse" message="tns:IPlaylistService_SetPlaylist_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Add">
       <wsdl:input wsaw:Action="http://tempuri.org/IPlaylistService/Add" message="tns:IPlaylistService_Add_InputMessage" />
@@ -188,6 +198,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="GetPlaylist">
       <soap12:operation soapAction="http://tempuri.org/IPlaylistService/GetPlaylist" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetPlaylist">
+      <soap12:operation soapAction="http://tempuri.org/IPlaylistService/SetPlaylist" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

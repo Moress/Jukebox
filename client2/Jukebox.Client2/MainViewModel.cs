@@ -55,6 +55,43 @@ namespace Jukebox.Client2
             }
         }
 
+        private int _trackCount;
+
+        /// <summary>
+        /// Количество песен в списке воспроизведения
+        /// </summary>
+        public int TrackCount
+        {
+            get
+            {
+                return _trackCount;
+            }
+            set
+            {
+                _trackCount = value;
+                OnPropertyChanged("TrackCount");
+            }
+        }
+
+        private string _totalDuration;
+
+        /// <summary>
+        /// Общая продолжительность (строкой)
+        /// </summary>
+        public string TotalDuration
+        {
+            get
+            {
+                return _totalDuration;
+            }
+            set
+            {
+                _totalDuration = value;
+                OnPropertyChanged("TotalDuration");
+            }
+        }
+        
+
         public void Test()
         {
            

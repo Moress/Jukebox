@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:my="clr-namespace:Jukebox.Client2"
+    xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
@@ -11,7 +12,9 @@
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot" Background="White">
         <ListBox
-			ItemsSource="{Binding TracksInPlaylist}">
+            Name="PlaylistListBox"
+			ItemsSource="{Binding TracksInPlaylist}"
+            Style="{StaticResource draggableListBox}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="{Binding State, Converter={StaticResource trackStateToBrushConverter}}">
@@ -27,20 +30,17 @@
                                 Style="{StaticResource TextBoxReadOnlyStyle}"/>
                             <TextBox
 							    Text="{Binding Title}" 
-                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                                Style="{StaticResource TextBoxReadOnlyStyle}"
+                                />
                             <TextBlock
 							    Text="{Binding Duration}" />
                             <TextBlock
-                                Text="{Binding State}" HorizontalAlignment="Right"/>
+                                Text="{Binding State}"
+                                HorizontalAlignment="Right"/>
                         </StackPanel>          
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.ItemContainerStyle>
         </ListBox>
     </Grid>
 </UserControl>

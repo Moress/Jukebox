@@ -11,6 +11,9 @@ namespace Jukebox.Server.Services {
 		[OperationContract]
 		Playlist GetPlaylist();
 
+        [OperationContract]
+        void SetPlaylist(Playlist playlist);
+
 		[OperationContract(IsOneWay = true)]
 		void Add(Track track);
 

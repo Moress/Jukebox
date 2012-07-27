@@ -28,10 +28,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <my:NowPlayingControl x:Name="NowPlayingControl1" Grid.Row="0" />
                 <my:PlaylistControl x:Name="PlaylistControl1" Grid.Row="1" />
+                <my:PlaylistInfoControl x:Name="PlaylistInfoControl1" Grid.Row="2"/>
             </Grid>
         </Grid>
+        
     </Grid>
 </UserControl>

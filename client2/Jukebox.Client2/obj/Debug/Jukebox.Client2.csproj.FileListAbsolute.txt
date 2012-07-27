@@ -192,3 +192,5 @@ C:\Jukebox\repo\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.g.resources
 C:\Jukebox\repo\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.dll
 C:\Jukebox\repo\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.pdb
 C:\Jukebox\repo\client2\Jukebox.Client2\obj\Debug\XapCacheFile.xml
+C:\Jukebox\repo\client2\Jukebox.Client2\Bin\Debug\Telerik.Windows.Controls.dll
+C:\Jukebox\repo\client2\Jukebox.Client2\obj\Debug\PlaylistInfoControl.g.i.cs

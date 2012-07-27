@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -14,6 +15,10 @@ using System.ServiceModel.Channels;
 using System.ServiceModel;
 using System.Windows.Threading;
 using System.Windows.Interop;
+using System.Windows.Controls;
+using ListBoxDragReorder;
+using Telerik.Windows.Controls.DragDrop;
+using Telerik.Windows;
 
 namespace Jukebox.Client2
 {
@@ -50,6 +55,7 @@ namespace Jukebox.Client2
 
             SearchResultsControl1.DataContext = _model;
             PlaylistControl1.DataContext = _model;
+            PlaylistInfoControl1.DataContext = _model;
 
             _mainTimer.Tick += new EventHandler(OnMainTimerTick);
             _mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
@@ -61,6 +67,12 @@ namespace Jukebox.Client2
             NowPlayingControl1.RefreshButton1.RefreshButtonClick += new EventHandler(RefreshButton1_RefreshButtonClick);
             NowPlayingControl1.NextButton1.NextButtonClick += new EventHandler(NextButton1_NextButtonClick);
             NowPlayingControl1.VolumeSlider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(VolumeSlider_ValueChanged);
+
+
+            PlaylistControl1.PlaylistListBox.AddHandler(RadDragAndDropManager.DropQueryEvent, new EventHandler<DragDropQueryEventArgs>(OnDropQuery));
+            PlaylistControl1.PlaylistListBox.AddHandler(RadDragAndDropManager.DragQueryEvent, new EventHandler<DragDropQueryEventArgs>(OnDragQuery));
+            PlaylistControl1.PlaylistListBox.AddHandler(RadDragAndDropManager.DropInfoEvent, new EventHandler<DragDropEventArgs>(OnDropInfo));
+            PlaylistControl1.PlaylistListBox.AddHandler(RadDragAndDropManager.DragInfoEvent, new EventHandler<DragDropEventArgs>(OnDragInfo));
         }
 
         void NextButton1_NextButtonClick(object sender, EventArgs e)
@@ -85,12 +97,39 @@ namespace Jukebox.Client2
         {
             var List1 = _model.TracksInPlaylist;
             var List2 = e.Result.Tracks;
-            var Count = List1.Where(x => !List2.Any(x1 => x1.Id == x.Id && x1.State == x.State))
-            .Union(List2.Where(x => !List1.Any(x1 => x1.Id == x.Id && x1.State == x.State))).Count();
-            if (Count != 0)
+            if (List1.Count != List2.Count)
             {
                 _model.TracksInPlaylist = e.Result.Tracks;
             }
+            else
+            {
+                for (int i = 0; i < List1.Count; i++)
+                {
+                    if ((List1[i].Id != List2[i].Id) ||
+                        (List1[i].State != List2[i].State))
+                    {
+                        _model.TracksInPlaylist = e.Result.Tracks;
+                        break;
+                    }
+                }
+            }
+
+            _model.TrackCount = _model.TracksInPlaylist.Count;
+
+            TimeSpan totalDuration = new TimeSpan(0, 0, 0);
+            foreach (Track t in _model.TracksInPlaylist)
+            {
+                totalDuration += t.Duration;
+            }
+
+            if (NowPlayingControl1.DataContext != null)
+            {
+                _model.TrackCount++;
+                Track currentTrack = NowPlayingControl1.DataContext as Track;
+                totalDuration += (currentTrack.Duration - currentTrack.PlayPosition);
+            }
+
+            _model.TotalDuration = totalDuration.ToString(@"hh\:mm\:ss");
         }
 
         void OnMainTimerTick(object sender, EventArgs e)
@@ -166,5 +205,134 @@ namespace Jukebox.Client2
             var playerService = ServiceManager.GetPlayerServiceClient();
             playerService.SetVolumeLevelAsync(e.NewValue);
         }
+        
+
+        private void OnDragInfo(object sender, DragDropEventArgs e)
+		{
+			if (e.Options.Status == DragStatus.DragComplete)
+			{
+				var listBox = e.Options.Source.FindItemsConrolParent() as ListBox;
+
+				var itemsSource = listBox.ItemsSource as IList<Track>;
+				var operation = e.Options.Payload as DragDropOperation;
+
+				itemsSource.Remove(operation.Payload as Track);
+			}
+		}
+
+		private void OnDropInfo(object sender, DragDropEventArgs e)
+		{
+			if (e.Options.Status == DragStatus.DropPossible)
+			{
+				var listBox = e.Options.Destination.FindItemsConrolParent() as ListBox;
+				VisualStateManager.GoToState(listBox, "DropPossible", false);
+				var destination = e.Options.Destination;
+
+				//Get the DropCueElemet:
+				var dropCueElement = (VisualTreeHelper.GetChild(listBox, 0) as FrameworkElement).FindName("DropCueElement") as FrameworkElement;
+
+				var operation = e.Options.Payload as DragDropOperation;
+
+				//Get the parent of the destination:
+				var visParent = VisualTreeHelper.GetParent(destination) as UIElement;
+
+				//Get the spacial relation between the destination and its parent:
+				var destinationStackTopLeft = destination.TransformToVisual(visParent).Transform(new Point());
+
+				var yTranslateValue = operation.DropPosition == DropPosition.Before ? destinationStackTopLeft.Y : destinationStackTopLeft.Y + destination.ActualHeight;
+
+				dropCueElement.RenderTransform = new TranslateTransform() { Y = yTranslateValue };
+			}
+
+			//Hide the DropCue:
+			if (e.Options.Status == DragStatus.DropImpossible || e.Options.Status == DragStatus.DropCancel || e.Options.Status == DragStatus.DropComplete)
+			{
+				var listBox = e.Options.Destination.FindItemsConrolParent() as ListBox;
+				VisualStateManager.GoToState(listBox, "DropImpossible", false);
+			}
+
+			//Place the item:
+			if (e.Options.Status == DragStatus.DropComplete)
+			{
+				var listBox = e.Options.Destination.FindItemsConrolParent() as ListBox;
+
+				var itemsSource = listBox.ItemsSource as IList<Track>;
+				var destinationIndex = itemsSource.IndexOf(e.Options.Destination.DataContext as Track);
+
+				var operation = e.Options.Payload as DragDropOperation;
+				var insertIndex = operation.DropPosition == DropPosition.Before ? destinationIndex : destinationIndex + 1;
+
+				itemsSource.Insert(insertIndex, operation.Payload as Track);
+
+				listBox.Dispatcher.BeginInvoke(() =>
+				{
+					listBox.SelectedIndex = insertIndex;
+				});
+
+                var playlistService = ServiceManager.GetPlaylistServiceClient();
+                Playlist playlist = new Playlist();
+                playlist.Tracks = new ObservableCollection<Track>();
+                foreach(Track t in listBox.ItemsSource)
+                {
+                    playlist.Tracks.Add(t);
+                }
+                playlistService.SetPlaylistAsync(playlist);
+			}
+		}
+
+		private void OnDropQuery(object sender, DragDropQueryEventArgs e)
+		{
+			if (e.Options.Status == DragStatus.DropDestinationQuery)
+			{
+				var destination = e.Options.Destination;
+				var listBox = destination.FindItemsConrolParent() as ListBox;
+
+				//Cannot place na item relative to itself:
+				if (e.Options.Source == e.Options.Destination)
+				{
+					return;
+				}
+
+				VisualStateManager.GoToState(listBox, "DropPossible", false);
+
+				//Get the spacial relation between the destination item and the vis. root:
+				var destinationTopLeft = destination.TransformToVisual(null).Transform(new Point());
+
+				//Should the new Item be moved before or after the destination item?:
+				bool placeBefore = (e.Options.CurrentDragPoint.Y - destinationTopLeft.Y) < destination.ActualHeight / 2;
+
+				var operation = e.Options.Payload as DragDropOperation;
+
+				operation.DropPosition = placeBefore ? DropPosition.Before : DropPosition.After;
+
+				e.QueryResult = true;
+				e.Handled = true;
+			}
+		}
+
+		private void OnDragQuery(object sender, DragDropQueryEventArgs e)
+		{
+			if (e.Options.Status == DragStatus.DragQuery)
+			{
+				e.QueryResult = true;
+				e.Handled = true;
+
+				var sourceControl = e.Options.Source;
+
+				var dragCue = RadDragAndDropManager.GenerateVisualCue(sourceControl);
+				dragCue.HorizontalAlignment = HorizontalAlignment.Left;
+				dragCue.Content = sourceControl.DataContext;
+                dragCue.ContentTemplate = App.Current.Resources["TrackDragCueTemplate"] as DataTemplate;
+				e.Options.DragCue = dragCue;
+
+				e.Options.Payload = new DragDropOperation() { Payload = sourceControl.DataContext };
+			}
+
+			if (e.Options.Status == DragStatus.DropSourceQuery)
+			{
+				e.QueryResult = true;
+				e.Handled = true;
+			}
+		}
     }
 }
