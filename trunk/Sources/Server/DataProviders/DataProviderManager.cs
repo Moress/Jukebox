@@ -10,14 +10,28 @@ namespace Jukebox.Server.DataProviders {
 			DataProviders = new List<IDataProvider>();
 		}
 
-		public IList<Track> Search(string query) {
+		public SearchResult Search(string query, List<TrackSourceComboItem> sources, int pageIndex, int pageSize) {
+            SearchResult searchResult = new SearchResult();
+
             List<Track> results = new List<Track>();
-            foreach (var dataProvider in DataProviders)
+            foreach (IDataProvider dataProvider in DataProviders)
             {
-                results.AddRange(dataProvider.Search(query));
+                foreach (TrackSourceComboItem item in sources)
+                {
+                    if (item.IsSelected && item.Source == dataProvider.GetSourceType())
+                    {
+                        results.AddRange(dataProvider.Search(query));
+                    }
+                }
             }
             results = DeleteDuplicates(results);
-            return results;
+
+            int skipCount = pageIndex * pageSize;
+
+            searchResult.TotalCount = results.Count;
+            searchResult.FoundTracks = results.Skip(skipCount).Take(pageSize).ToList();
+
+            return searchResult;
 		}
 
 		public byte[] Download(Track track) {
@@ -43,10 +57,10 @@ namespace Jukebox.Server.DataProviders {
 
             var hashValues = from cachedtrack in results
                              where cachedtrack.Source == TrackSource.Cache
-                             select cachedtrack.GetHash();
+                             select cachedtrack.Id;
 
             var nonCachedTracks = from nonCachedTrack in results
-                                  where (nonCachedTrack.Source != TrackSource.Cache) && (!hashValues.Contains(nonCachedTrack.GetHash()))
+                                  where (nonCachedTrack.Source != TrackSource.Cache) && (!hashValues.Contains(nonCachedTrack.Id))
                                   select nonCachedTrack;
             clearResults.AddRange(nonCachedTracks);
 

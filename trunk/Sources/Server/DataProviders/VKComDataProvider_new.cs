@@ -18,8 +18,10 @@ namespace Jukebox.Server.DataProviders
     {
         static Cookie _cookie = null;
 
-        const string LOGIN = "antoshalee@gmail.com";
-        const string PASSWORD = "kvitunov";
+        public TrackSource GetSourceType()
+        {
+            return 0;
+        }
 
         public IList<Track> Search(string query)
         {
@@ -28,7 +30,7 @@ namespace Jukebox.Server.DataProviders
             {
                 if (_cookie == null)
                 {
-                    var res = Auth(LOGIN, PASSWORD, out _cookie);
+                    var res = Auth(Config.GetInstance().VKLogin, Config.GetInstance().VKPassword, out _cookie);
                     if (!res)
                     {
                         throw new Exception("Failed to authorize at vk.com.");

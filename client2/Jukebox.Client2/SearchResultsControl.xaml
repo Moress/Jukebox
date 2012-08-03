@@ -3,45 +3,115 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+    xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
     xmlns:my="clr-namespace:Jukebox.Client2"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
         <my:TrackIsAddedToVisibilityConverter x:Key="trackIsAddedToVisibilityConverter" />
         <my:TrackSourceToBrushConverter x:Key="trackSourceToBrushConverter" />
+        <my:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <my:SingerToLinkConverter x:Key="singerToLinkConverter"/>
     </UserControl.Resources>
-    <Grid>
-        <ListBox ItemsSource="{Binding FoundTracks}">
-            <ListBox.ItemTemplate >
-                <DataTemplate>
-                    <Grid Background="{Binding Source, Converter={StaticResource trackSourceToBrushConverter}}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Name="QueryTextBox" />
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Sources}" Style="{StaticResource MultiSelComboBoxStyle}" Width="26" >
+                <ToolTipService.ToolTip>
+                    <ToolTip>
+                        <ItemsControl ItemsSource="{Binding Sources}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Source}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </ComboBox>
+        </Grid>
+        <ListBox Grid.Row="1" ItemsSource="{Binding FoundTracks}">
+                <ListBox.ItemTemplate >
+                    <DataTemplate>
+                        <Grid Background="{Binding Source, Converter={StaticResource trackSourceToBrushConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Margin="10" Grid.Column="1">
-                            <TextBox
-								Text="{Binding Singer}"
-								FontWeight="Bold" 
-                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
-                            <TextBox
-								Text="{Binding Title}" 
-                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="1">
+                        <toolkit:DockPanel Grid.Row="0"
+						    Margin="10,2,10,2" 
+                            Grid.Column="0"
+                            LastChildFill="False">
+                            <RichTextBox
+                                VerticalAlignment="Center"
+                                Style="{StaticResource RichTextBoxReadOnlyStyle}"
+                                MaxWidth="500"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Disabled"
+                                >
+                                    <Paragraph >
+                                        <Hyperlink NavigateUri="{Binding Singer, Converter={StaticResource singerToLinkConverter}}"
+                                               TargetName="_blank"
+                                               TextDecorations="None"
+                                               FontWeight="Bold"
+                                               Foreground="Black"
+                                               >
+                                            <Run Text="{Binding Singer}" />
+                                        </Hyperlink>
+                                    </Paragraph>
+                            </RichTextBox>
                             <TextBlock
-								Text="{Binding Duration}" />
-                            <TextBlock
-                                Text="{Binding Source}" HorizontalAlignment="Right"/>
+							    Text="{Binding Duration}"
+                                VerticalAlignment="Center"
+                                toolkit:DockPanel.Dock="Right"/>
+                        </toolkit:DockPanel>
+                        <toolkit:DockPanel Grid.Row="1"
+						    Margin="10,2,10,2" 
+                            Grid.Column="0"
+                            LastChildFill="False">
+                                <TextBox
+							    Text="{Binding Title}" 
+                                VerticalAlignment="Center"
+                                Style="{StaticResource TextBoxReadOnlyStyle}"
+                                MaxWidth="500"
+                                />
+                                <TextBlock
+                                Text="{Binding Source}"
+                                VerticalAlignment="Center"
+                                toolkit:DockPanel.Dock="Right"/>
+                        </toolkit:DockPanel>
                         </StackPanel>
                         <Button Content="+" Tag="{Binding}" Click="OnAddButtonClick" Grid.Column="0"
-                                Visibility="{Binding IsAdded, Converter={StaticResource trackIsAddedToVisibilityConverter}}" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+                                    Visibility="{Binding IsAdded, Converter={StaticResource trackIsAddedToVisibilityConverter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+            <sdk:DataPager 
+                Grid.Row="2"
+                Source="{Binding FoundTracks}"
+                IsTotalItemCountFixed="True"
+                />        
     </Grid>
+   
 </UserControl>

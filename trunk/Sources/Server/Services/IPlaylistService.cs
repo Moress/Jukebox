@@ -26,5 +26,8 @@ namespace Jukebox.Server.Services {
         /// </summary>
         [OperationContract]
         string Next();
+
+        [OperationContract]
+        string Shuffle();
 	}
 }

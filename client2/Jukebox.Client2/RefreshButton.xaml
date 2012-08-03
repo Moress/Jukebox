@@ -9,7 +9,7 @@
     
     <UserControl.Resources>
         <Storyboard x:Key="Storyboard1">
-            <DoubleAnimation Storyboard.TargetName="Transform1" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:1"
+            <DoubleAnimation Storyboard.TargetName="Plane1" Storyboard.TargetProperty="RotationZ" From="360" To="0" Duration="0:0:2"
                 RepeatBehavior="Forever"/>
         </Storyboard>
         <SolidColorBrush Color="LightBlue" x:Key="NormalBrush" />
@@ -19,13 +19,18 @@
     
     <Grid x:Name="LayoutRoot">
         <Canvas Width="200" Height="200">
-            <Ellipse x:Name="Ellipse1" Width="200" Height="200" Fill="LightBlue" />
-            <Path Stroke="Black" StrokeThickness="20" Data="M 80,30 C 0,20 0,180 80,170"
-                Width="200" Height="200"/>
-            <Path Stroke="Black" StrokeThickness="1" Data="M 70,0 L 100,30 70,60" Width="200" Height="200" Fill="Black" />
-            <Path Stroke="Black" StrokeThickness="20" Data="M 120,30 C 200,20 200,180 120,170"
-                Width="200" Height="200"/>
-            <Path Stroke="Black" StrokeThickness="1" Data="M 130,140 L 100,170 130,200" Width="200" Height="200" Fill="Black" />
+            <Rectangle x:Name="Rectangle1" RadiusX="45" RadiusY="45" Width="200" Height="200" Fill="LightBlue"/>
+            <Canvas Width="200" Height="200">
+                <Canvas.Projection>
+                    <PlaneProjection x:Name="Plane1"/>
+                </Canvas.Projection>
+                <Path Stroke="Black" StrokeThickness="20" Data="M 80,30 C 0,20 0,180 80,170"
+                    Width="200" Height="200"/>
+                <Path Stroke="Black" StrokeThickness="1" Data="M 70,0 L 100,30 70,60" Width="200" Height="200" Fill="Black" />
+                <Path Stroke="Black" StrokeThickness="20" Data="M 120,30 C 200,20 200,180 120,170"
+                    Width="200" Height="200"/>
+                <Path Stroke="Black" StrokeThickness="1" Data="M 130,140 L 100,170 130,200" Width="200" Height="200" Fill="Black" />
+            </Canvas>
             <Canvas.RenderTransform>
                 <TransformGroup>
                     

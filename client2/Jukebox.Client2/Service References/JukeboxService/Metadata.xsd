@@ -45,4 +45,32 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfTrack" nillable="true" type="tns:ArrayOfTrack" />
+  <xs:complexType name="ArrayOfTrackSourceComboItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TrackSourceComboItem" nillable="true" type="tns:TrackSourceComboItem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTrackSourceComboItem" nillable="true" type="tns:ArrayOfTrackSourceComboItem" />
+  <xs:complexType name="TrackSourceComboItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Source" type="tns:TrackSource" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TrackSourceComboItem" nillable="true" type="tns:TrackSourceComboItem" />
+  <xs:complexType name="SearchResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FoundTracks" nillable="true" type="tns:ArrayOfTrack" />
+      <xs:element minOccurs="0" name="TotalCount" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SearchResult" nillable="true" type="tns:SearchResult" />
+  <xs:complexType name="User">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ActionPoints" type="xs:int" />
+      <xs:element minOccurs="0" name="UserIpAddress" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VolumeLevelDiffs" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="User" nillable="true" type="tns:User" />
 </xs:schema>

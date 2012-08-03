@@ -10,6 +10,12 @@ namespace Jukebox.Server.DataProviders {
 	using Jukebox.Server.Models;
 
 	class ProstopleerDataProvider : IDataProvider {
+
+        public TrackSource GetSourceType()
+        {
+            return 0;
+        }
+
 		public IList<Track> Search(string query) {
 			// Result
 			var result = new List<Track>();

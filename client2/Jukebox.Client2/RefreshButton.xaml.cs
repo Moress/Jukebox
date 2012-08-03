@@ -25,19 +25,19 @@ namespace Jukebox.Client2
         {
             var storyboard = (Storyboard)Resources["Storyboard1"];
             storyboard.Begin();
-            Ellipse1.Fill = (Brush)Resources["HoverBrush"];
+            Rectangle1.Fill = (Brush)Resources["HoverBrush"];
         }
 
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
         {
             var storyboard = (Storyboard)Resources["Storyboard1"];
             storyboard.Stop();
-            Ellipse1.Fill = (Brush)Resources["NormalBrush"];
+            Rectangle1.Fill = (Brush)Resources["NormalBrush"];
         }
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Ellipse1.Fill = (Brush)Resources["DownBrush"];
+            Rectangle1.Fill = (Brush)Resources["DownBrush"];
 
             var storyboard = (Storyboard)Resources["Storyboard1"];
             storyboard.Pause();
@@ -45,7 +45,7 @@ namespace Jukebox.Client2
 
         private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Ellipse1.Fill = (Brush)Resources["HoverBrush"];
+            Rectangle1.Fill = (Brush)Resources["HoverBrush"];
             
             var storyboard = (Storyboard)Resources["Storyboard1"];
             storyboard.Resume();

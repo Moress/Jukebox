@@ -5,10 +5,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:my="clr-namespace:Jukebox.Client2"
     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
+             xmlns:telerik="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
         <my:TrackStateToBrushConverter x:Key="trackStateToBrushConverter" />
+        <my:SingerToLinkConverter x:Key="singerToLinkConverter"/>
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot" Background="White">
         <ListBox
@@ -18,26 +20,51 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="{Binding State, Converter={StaticResource trackStateToBrushConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel
-						    Margin="10" Grid.Column="1">
-                            <TextBox
-							    Text="{Binding Singer}"
-							    FontWeight="Bold"
-                                Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <toolkit:DockPanel Grid.Row="0"
+						    Margin="10,2,10,2" 
+                            Grid.Column="0"
+                            LastChildFill="False">
+                            <RichTextBox
+                                VerticalAlignment="Center"
+                                Style="{StaticResource RichTextBoxReadOnlyStyle}"
+                                MaxWidth="500"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Disabled">
+                                <Paragraph>
+                                    <Hyperlink NavigateUri="{Binding Singer, Converter={StaticResource singerToLinkConverter}}"
+                                               TargetName="_blank"
+                                               TextDecorations="None"
+                                               FontWeight="Bold"
+                                               Foreground="Black"
+                                               >
+                                        <Run Text="{Binding Singer}" />
+                                    </Hyperlink>
+                                </Paragraph>
+                            </RichTextBox>
+                            <TextBlock
+							    Text="{Binding Duration}"
+                                VerticalAlignment="Center"
+                                toolkit:DockPanel.Dock="Right"/>
+                        </toolkit:DockPanel>
+                        <toolkit:DockPanel Grid.Row="1"
+						    Margin="10,2,10,2" 
+                            Grid.Column="0"
+                            LastChildFill="False">
                             <TextBox
 							    Text="{Binding Title}" 
+                                VerticalAlignment="Center"
                                 Style="{StaticResource TextBoxReadOnlyStyle}"
+                                MaxWidth="500"
                                 />
                             <TextBlock
-							    Text="{Binding Duration}" />
-                            <TextBlock
                                 Text="{Binding State}"
-                                HorizontalAlignment="Right"/>
-                        </StackPanel>          
+                                VerticalAlignment="Center"
+                                toolkit:DockPanel.Dock="Right"/>
+                        </toolkit:DockPanel>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -16,15 +16,10 @@ namespace Jukebox.Server {
 	using Jukebox.Server.Models;
 
 	class Player {
-		public Player(string deviceID) {
+		public Player() {
 			Instance = this;
-			Engine = new ISoundEngine(SoundOutputDriver.AutoDetect, SoundEngineOptionFlag.DefaultOptions, deviceID);
+			Engine = new ISoundEngine(SoundOutputDriver.AutoDetect, SoundEngineOptionFlag.DefaultOptions, Config.GetInstance().DeviceId);
 			Playlist = new Playlist();
-            volumeChangedTreshold = 0;
-            volumeChangeTimer = new System.Timers.Timer();
-            volumeChangeTimer.AutoReset = true;
-            volumeChangeTimer.Elapsed += new ElapsedEventHandler(OnVolumeChangeTimerElapsed);
-            volumeChangeTimer.Interval = 10000;
       
 			//Playlist.Tracks.CollectionChanged += OnPlaylistChanged;
 			new Thread(() => {
@@ -34,20 +29,21 @@ namespace Jukebox.Server {
 
 		private void PlayerThread() {
 			Track track = Playlist.Tracks.Where(x => x.State == TrackState.Ready).FirstOrDefault();
-			bool isPlaying = CurrentISound == null ? false : !CurrentISound.Finished;
-			if (track != null && !isPlaying) {
+			IsPlaying = CurrentISound == null ? false : !CurrentISound.Finished;
+            if (track != null && !IsPlaying)
+            {
 				Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track is playing: " + track);
 				TrackChanged(this, new PlayerEventArgs() { Track = track });
 				Playlist.Tracks.Remove(track);
 				CurrentTrack = track;
                 CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds(0);
-                CurrentISound = Engine.Play2D(@Context.GetInstance().CacheDir + track.GetHash() + ".mp3");
+                CurrentISound = Engine.Play2D(Config.GetInstance().CacheDir + track.Id + ".mp3");
 			}
-            else if (!isPlaying)
+            else if (!IsPlaying)
             {
                 CurrentTrack = null;
             }
-            else if (isPlaying)
+            else if (IsPlaying)
             {
                 CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds((double)CurrentISound.PlayPosition);
             }
@@ -62,7 +58,7 @@ namespace Jukebox.Server {
 
 			foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Unknown)) {
                 Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been enqueued: " + t);
-                if (File.Exists(@Context.GetInstance().CacheDir + t.GetHash() + ".mp3"))
+                if (File.Exists(Config.GetInstance().CacheDir + t.GetHash() + ".mp3"))
                 {
                     Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been loaded from cache: " + t);
                     t.State = TrackState.Ready;
@@ -77,10 +73,10 @@ namespace Jukebox.Server {
                         TrackStateChanged(this, new PlayerEventArgs() { Track = t });
 
                         byte[] data = DataProviderManager.Instance.Download(t);
-                        if ((data != null) && !File.Exists(@Context.GetInstance().CacheDir + t.GetHash() + ".mp3"))
+                        if ((data != null) && !File.Exists(Config.GetInstance().CacheDir + t.Id + ".mp3"))
                         {
-                            File.WriteAllBytes(@Context.GetInstance().CacheDir + t.GetHash() + ".mp3", data);
-                            File.AppendAllText(@Context.GetInstance().CacheDir + "hashmap.txt", t.GetHash() + "|" + t.Singer.Trim() + "|" + t.Title.Trim() + "|" + t.Duration.ToString() + "\r\n");
+                            File.WriteAllBytes(Config.GetInstance().CacheDir + t.Id + ".mp3", data);
+                            File.AppendAllText(Config.GetInstance().CacheDir + "hashmap.txt", t.Id + "|" + t.Singer.Trim() + "|" + t.Title.Trim() + "|" + t.Duration.ToString() + "\r\n");
                         }
                         t.State = data != null ? TrackState.Ready : TrackState.Failed;
                         Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has state: {0} {1}", t, t.State);
@@ -90,12 +86,6 @@ namespace Jukebox.Server {
                 }
 			}
 		}
-
-        private static void OnVolumeChangeTimerElapsed(object source, ElapsedEventArgs e)
-        {
-            Player.Instance.volumeChangedTreshold = 0;
-            Player.Instance.volumeChangeTimer.Enabled = false;
-        }
 
 		/*private void OnPlaylistChanged(object sender, NotifyCollectionChangedEventArgs e) {
 			if (e.NewItems == null) return;
@@ -114,11 +104,11 @@ namespace Jukebox.Server {
 
 		public event EventHandler<PlayerEventArgs> TrackChanged;
 		public event EventHandler<PlayerEventArgs> TrackStateChanged;
-        
-        public const double VOLUME_TRESHOLD = 15;
+       
 		public static Player Instance { get; private set; }
 		public Track CurrentTrack { get; private set; }
 		public Playlist Playlist { get; set; }
+        public bool IsPlaying { get; set; }
         public double VolumeLevel {
             get
             {
@@ -126,28 +116,12 @@ namespace Jukebox.Server {
             }
             set
             {
-                if (volumeChangedTreshold < VOLUME_TRESHOLD)
-                {
-                    volumeChangedTreshold += Math.Abs(Engine.SoundVolume - value);
-                    if ((float)(value) != Engine.SoundVolume)
-                    {
-                        Engine.SoundVolume = (float)(value);
-                    }
-                }
-                else
-                {
-                    if (volumeChangeTimer.Enabled != true)
-                    {
-                        volumeChangeTimer.Enabled = true;
-                    }
-                }
+                Engine.SoundVolume = (float)(value);
             }
         }
 		
 		private ISoundEngine Engine { get; set; }
-		private ISound CurrentISound { get; set; }
-        private System.Timers.Timer volumeChangeTimer;
-        private double volumeChangedTreshold;
+		public ISound CurrentISound { get; set; }
 
         /// <summary>
         /// Прерывает воспроизведение текущей песни.

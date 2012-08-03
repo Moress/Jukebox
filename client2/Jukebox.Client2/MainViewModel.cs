@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,7 +18,7 @@ namespace Jukebox.Client2
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        /// <summary>
+        /*/// <summary>
         /// Найденные песни.
         /// </summary>
         ObservableCollection<Track> _foundTracks = new ObservableCollection<Track>();
@@ -25,6 +27,21 @@ namespace Jukebox.Client2
         /// Найденные песни.
         /// </summary>
         public ObservableCollection<Track> FoundTracks
+        {
+            get
+            {
+                return _foundTracks;
+            }
+            set
+            {
+                _foundTracks = value;
+                OnPropertyChanged("FoundTracks");
+            }
+        }*/
+
+        SearchResultPagedView _foundTracks;
+
+        public SearchResultPagedView FoundTracks
         {
             get
             {
@@ -90,7 +107,55 @@ namespace Jukebox.Client2
                 OnPropertyChanged("TotalDuration");
             }
         }
+
+        private ObservableCollection<TrackSourceComboItem> _sources;
+        /// <summary>
+        /// Источники поиска
+        /// </summary>
+        public ObservableCollection<TrackSourceComboItem> Sources
+        {
+            get
+            {
+                return _sources;
+            }
+            set
+            {
+                _sources = value;
+                OnPropertyChanged("Sources");
+            }
+        }
+
+        private int _userActionPoints;
+        /// <summary>
+        /// Очки действий
+        /// </summary>
+        public int UserActionPoints
+        {
+            get
+            {
+                return _userActionPoints;
+            }
+            set
+            {
+                _userActionPoints = value;
+                OnPropertyChanged("UserActionPoints");
+            }
+        }
         
+        private Track _currentTrack;
+
+        public Track CurrentTrack
+        {
+            get
+            {
+                return _currentTrack;
+            }
+            set
+            {
+                _currentTrack = value;
+                OnPropertyChanged("CurrentTrack");
+            }
+        }
 
         public void Test()
         {

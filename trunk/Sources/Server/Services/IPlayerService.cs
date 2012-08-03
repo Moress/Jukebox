@@ -15,6 +15,9 @@ namespace Jukebox.Server.Services {
         double GetVolumeLevel();
 
         [OperationContract]
-        void SetVolumeLevel(double value);
+        string SetVolumeLevel(double value);
+
+        [OperationContract]
+        string PlayOrPause();
 	}
 }

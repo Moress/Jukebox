@@ -5,41 +5,64 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:my="clr-namespace:Jukebox.Client2"
     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
+    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
 
     <UserControl.Resources>
         <my:TimeValuesToStringConverter x:Key="timeValuesToStringConverter" />
-        <my:TrackToStringConverter x:Key="trackToStringConverter" />
+        <my:TrackToSingerConverter x:Key="trackToSingerConverter"/>
+        <my:TrackToTitleConverter x:Key="trackToTitleConverter"/>
+        <my:TrackToSingerLinkConverter x:Key="trackToSingerLinkConverter"/>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" >
                 <GradientStop Color="Aquamarine" />
                 <GradientStop Color="LightBlue" Offset="1" />
             </LinearGradientBrush>
         </Grid.Background>
-
-        <toolkit:DockPanel Margin="10,2,10,2" Grid.Column="1" LastChildFill="False" >
-            <my:RefreshButton Width="20" Height="20" Margin="0,0,5,0" x:Name="RefreshButton1" />
-            <my:NextButton Width="20" Height="20" Margin="0,0,10,0" x:Name="NextButton1" />
-
-            <TextBox VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Singer}" Style="{StaticResource TextBoxReadOnlyStyle}"/>
-            <TextBlock Margin="10,0,0,0" />
-            <TextBox VerticalAlignment="Center" Text="{Binding Title}" MaxWidth="400" Style="{StaticResource TextBoxReadOnlyStyle}"/>
-            <TextBlock Margin="10,0,0,0" />
-            <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource timeValuesToStringConverter}}"/>
-            
-            <Slider toolkit:DockPanel.Dock="Right" Height="23" Name="VolumeSlider" Width="100" Minimum="0.2" Maximum="1" SmallChange="0.01"/>
-            <TextBlock toolkit:DockPanel.Dock="Right" Margin="10,0,0,0" VerticalAlignment="Center" Name="VolumeLevel"/>
-            
+        <toolkit:DockPanel Margin="10,0,10,0">
+            <toolkit:Expander VerticalAlignment="Center" Style="{StaticResource ExpanderStyle}">
+                <toolkit:Expander.Header>
+                    <toolkit:DockPanel  LastChildFill="False">
+                        <RichTextBox
+                            VerticalAlignment="Center"
+                            Style="{StaticResource RichTextBoxReadOnlyStyle}"
+                            MaxWidth="300"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Disabled">
+                            <Paragraph>
+                                <Hyperlink NavigateUri="{Binding CurrentTrack, Converter={StaticResource trackToSingerLinkConverter}}"
+                               TargetName="_blank"
+                               TextDecorations="None"
+                               FontWeight="Bold"
+                               Foreground="Black">
+                                    <Run Text="{Binding CurrentTrack, Converter={StaticResource trackToSingerConverter}}" />
+                                </Hyperlink>
+                            </Paragraph>
+                        </RichTextBox>
+                        <TextBox VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter={StaticResource trackToTitleConverter}}" MaxWidth="300" Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                        <TextBlock Margin="10,0,0,0" />
+                        <TextBlock toolkit:DockPanel.Dock="Right" VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter ={StaticResource timeValuesToStringConverter}}"/>
+                    </toolkit:DockPanel>
+                </toolkit:Expander.Header>
+                
+                <toolkit:DockPanel Margin="0,5,0,5" LastChildFill="False">
+                    <TextBlock VerticalAlignment="Center" Text="ОД:"/>
+                    <TextBlock Margin="10,0,0,0" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding UserActionPoints}" FontWeight="Bold"/>
+                    <TextBlock Margin="10,0,0,0" />
+                    <my:RefreshButton Width="20" Height="20" Margin="0,0,5,0" x:Name="RefreshButton1" ToolTipService.ToolTip="Обновить"/>
+                    <my:NextButton Width="20" Height="20" Margin="0,0,5,0" x:Name="NextButton1" ToolTipService.ToolTip="Проголосовать против трека"/>
+                    <my:PlayAndPauseButton Width="20" Height="20" Margin="0,0,5,0" x:Name="PlayAndPauseButton1" ToolTipService.ToolTip="Воспроизведение/Пауза"/>
+                    <my:ShuffleButton Width="20" Height="20" Margin="0,0,5,0" x:Name="ShuffleButton1" ToolTipService.ToolTip="Случайное перемешивание плейлиста"/>
+                    <Slider toolkit:DockPanel.Dock="Right" Height="23" Name="VolumeSlider" Width="100" Minimum="0.2" Maximum="1" SmallChange="0.01" LargeChange="0.01" ToolTipService.ToolTip="Громкость"/>
+                    <TextBlock toolkit:DockPanel.Dock="Right" Margin="10,0,0,0" VerticalAlignment="Center" Name="VolumeLevel" ToolTipService.ToolTip="Громкость"/>
+                </toolkit:DockPanel>
+                
+            </toolkit:Expander>
         </toolkit:DockPanel>
-
-         
     </Grid>
 </UserControl>

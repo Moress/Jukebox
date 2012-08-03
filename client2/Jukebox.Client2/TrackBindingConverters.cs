@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Data;
 using Jukebox.Client2.JukeboxService;
+using System.Linq;
 
 namespace Jukebox.Client2
 {
@@ -84,7 +85,7 @@ namespace Jukebox.Client2
             if (value == null)
                 return null;
 
-            return string.Format("({0}/{1})", track.PlayPosition.ToString(@"mm\:ss"), track.Duration.ToString(@"mm\:ss"));
+            return string.Format("{0}/{1}", track.PlayPosition.ToString(@"hh\:mm\:ss"), track.Duration.ToString(@"hh\:mm\:ss"));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -102,6 +103,77 @@ namespace Jukebox.Client2
                 return null;
 
             return string.Format("{0} - {1} ({2})", track.Singer, track.Title, track.Duration.ToString(@"mm\:ss"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class SingerToLinkConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var singer = value as string;
+            if (value == null)
+                return null;
+
+            string preparedString = String.Join("+", singer.Split(' ').ToList());
+            return string.Format(@"http://www.lastfm.ru/music/{0}", preparedString);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class TrackToSingerLinkConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var track = value as Track;
+            if (value == null)
+                return null;
+
+            string preparedString = String.Join("+", track.Singer.Split(' ').ToList());
+            return string.Format(@"http://www.lastfm.ru/music/{0}", preparedString);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class TrackToSingerConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var track = value as Track;
+            if (value == null)
+                return null;
+
+            return track.Singer;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
+    public class TrackToTitleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var track = value as Track;
+            if (value == null)
+                return null;
+
+            return track.Title;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

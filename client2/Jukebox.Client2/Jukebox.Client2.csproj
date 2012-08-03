@@ -59,18 +59,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
+    <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Extensions, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.ServiceModel.NetTcp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.ServiceModel.PollingDuplex, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
-    <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Controls, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Controls.Toolkit, Version=4.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="Telerik.Windows.Controls, Version=2011.2.1107.1040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL" />
@@ -79,22 +82,31 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ControlExtensions.cs" />
-    <Compile Include="DragDropOperation.cs" />
+    <Compile Include="BoolToVisibilityConverter.cs" />
+    <Compile Include="Misc\ControlExtensions.cs" />
+    <Compile Include="Misc\DragDropOperation.cs" />
     <Compile Include="ErrorsWindow.xaml.cs">
       <DependentUpon>ErrorsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="JukeboxService\TrackSourceComboItem.cs" />
     <Compile Include="NextButton.xaml.cs">
       <DependentUpon>NextButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="NowPlayingControl.xaml.cs">
       <DependentUpon>NowPlayingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlayAndPauseButton.xaml.cs">
+      <DependentUpon>PlayAndPauseButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlaylistInfoControl.xaml.cs">
       <DependentUpon>PlaylistInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="RefreshButton.xaml.cs">
       <DependentUpon>RefreshButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SearchResultPagedView.cs" />
+    <Compile Include="ShuffleButton.xaml.cs">
+      <DependentUpon>ShuffleButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="TrackBindingConverters.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -126,13 +138,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ShuffleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Service References\JukeboxService\Jukebox.Client2.JukeboxService.Playlist.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\JukeboxService\Jukebox.Client2.JukeboxService.SearchResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\JukeboxService\Jukebox.Client2.JukeboxService.Track.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\JukeboxService\Jukebox.Client2.JukeboxService.User.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\JukeboxService\JukeboxService.wsdl" />
@@ -146,6 +168,10 @@
     <None Include="Service References\JukeboxService\Metadata3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Page Include="PlayAndPauseButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SearchResultsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -175,7 +201,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Content Include="ServiceReferences.ClientConfig" />
+    <Content Include="ServiceReferences.ClientConfig">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

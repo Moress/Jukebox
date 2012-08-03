@@ -22,6 +22,11 @@ namespace Jukebox.Server.DataProviders
         const string LOGIN = "antoshalee@gmail.com";
         const string PASSWORD = "kvitunov";
 
+        public TrackSource GetSourceType()
+        {
+            return TrackSource.VK;
+        }
+
         public IList<Track> Search(string query)
         {
             var result = new List<Track>();
@@ -41,7 +46,7 @@ namespace Jukebox.Server.DataProviders
 
                 if (_cookie == null)
                 {
-                    var res = Auth(LOGIN, PASSWORD, out _cookie);
+                    var res = Auth(Config.GetInstance().VKLogin, Config.GetInstance().VKPassword, out _cookie);
                     if (!res)
                     {
                         throw new Exception("Failed to authorize at vk.com.");
@@ -87,7 +92,6 @@ namespace Jukebox.Server.DataProviders
 
                         var terms = match.Groups[1].Value.Replace("\'", "").Split(',');
 
-                        track.Id = terms[3];
                         track.Uri = new Uri("http://cs" + terms[1] + ".vkontakte.ru/u" + terms[2] + "/audio/" +
                             terms[3] + ".mp3");
 
@@ -108,6 +112,8 @@ namespace Jukebox.Server.DataProviders
                         TimeSpan.TryParse("00:" + duration, out tmp);
                         track.Duration = tmp;
                         track.Source = TrackSource.VK;
+
+                        track.Id = track.GetHash();
 
                         result.Add(track);
 

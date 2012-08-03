@@ -3,7 +3,7 @@ namespace Jukebox.Server.Models {
 	using System.Runtime.Serialization;
 
 	[DataContract]
-	enum TrackState {
+	public enum TrackState {
 		[EnumMember]
 		Unknown,
 		[EnumMember]

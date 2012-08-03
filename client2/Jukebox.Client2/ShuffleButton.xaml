@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Jukebox.Client2.ShuffleButton"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400"
+    MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave"
+    MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="Storyboard1">
+            <DoubleAnimation Storyboard.TargetName="Plane1" Storyboard.TargetProperty="RotationX" From="0" To="360" Duration="0:0:2"
+                RepeatBehavior="Forever"/>
+        </Storyboard>
+        <SolidColorBrush Color="LightBlue" x:Key="NormalBrush" />
+        <SolidColorBrush Color="White" x:Key="HoverBrush" />
+        <SolidColorBrush Color="Aquamarine" x:Key="DownBrush" />
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Canvas Width="200" Height="200">
+            <Rectangle x:Name="Rectangle1" RadiusX="45" RadiusY="45" Width="200" Height="200" Fill="LightBlue"/>
+            <Canvas Width="200" Height="200">
+                <Canvas.Projection>
+                    <PlaneProjection x:Name="Plane1"/>
+                </Canvas.Projection>
+                <Path Stroke="Black" StrokeThickness="20" Width="200" Height="200"
+                  Data="M 10,60 L 50,60 C 60,60,65,65, 80,80 M 115,115 C 125,125, 135,135, 140,135 L 175, 135" />
+                <Path Stroke="Black" StrokeThickness="5" Width="200" Height="200" Fill="Black"
+                  Data="M 165, 135 L 165,160 L 190, 135 L 165, 110 L 165,135" />
+                <Path Stroke="Black" StrokeThickness="20" Width="200" Height="200"
+                  Data="M 10,135 L 50,135 C 60,135,65,130, 100, 95 C 125,70,135,60, 155,60 L 175, 60" />
+                <Path Stroke="Black" StrokeThickness="5" Width="200" Height="200" Fill="Black"
+                  Data="M 165, 60 L 165,85 L 190, 60 L 165, 35 L 165,60" />
+            </Canvas>
+            
+
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX=".1" ScaleY=".1" />
+                </TransformGroup>
+            </Canvas.RenderTransform>
+        </Canvas>
+    </Grid>
+</UserControl>

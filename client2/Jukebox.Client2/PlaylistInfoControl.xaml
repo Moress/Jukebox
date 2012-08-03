@@ -8,7 +8,7 @@
     d:DesignHeight="300" d:DesignWidth="400">
     
     <Grid x:Name="LayoutRoot" Background="White">
-        <toolkit:DockPanel LastChildFill="False">
+        <toolkit:DockPanel Margin="10,4,10,4"  LastChildFill="False">
             <TextBlock Text="Количество треков:"/>
             <TextBlock Margin="10,0,0,0" />
             <TextBlock Text="{Binding TrackCount}"/>

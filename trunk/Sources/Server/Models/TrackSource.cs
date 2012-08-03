@@ -4,7 +4,7 @@ namespace Jukebox.Server.Models
     using System.Runtime.Serialization;
 
     [DataContract]
-    enum TrackSource
+    public enum TrackSource
     {
         [EnumMember]
         VK,

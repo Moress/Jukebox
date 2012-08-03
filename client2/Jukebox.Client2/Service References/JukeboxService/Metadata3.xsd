@@ -35,7 +35,21 @@
   </xs:element>
   <xs:element name="SetVolumeLevelResponse">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SetVolumeLevelResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PlayOrPause">
+    <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PlayOrPauseResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="PlayOrPauseResult" nillable="true" type="xs:string" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnCurrentTrackChanged">
@@ -95,6 +109,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Shuffle">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ShuffleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ShuffleResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="OnTrackAdded">
     <xs:complexType>
       <xs:sequence>
@@ -120,13 +146,28 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="query" nillable="true" type="xs:string" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Jukebox.Server.Models" minOccurs="0" name="sources" nillable="true" type="q10:ArrayOfTrackSourceComboItem" />
+        <xs:element minOccurs="0" name="pageIndex" type="xs:int" />
+        <xs:element minOccurs="0" name="pageSize" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SearchResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Jukebox.Server.Models" minOccurs="0" name="SearchResult" nillable="true" type="q10:ArrayOfTrack" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Jukebox.Server.Models" minOccurs="0" name="SearchResult" nillable="true" type="q11:SearchResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUser">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUserResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Jukebox.Server.Models" minOccurs="0" name="GetUserResult" nillable="true" type="q12:User" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -138,7 +179,7 @@
   <xs:element name="GetSilverlightPolicyResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.microsoft.com/Message" name="GetSilverlightPolicyResult" type="q11:StreamBody" />
+        <xs:element xmlns:q13="http://schemas.microsoft.com/Message" name="GetSilverlightPolicyResult" type="q13:StreamBody" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

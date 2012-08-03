@@ -2,6 +2,7 @@
 namespace Jukebox.Server.Services {
 	using System.Collections.Generic;
 	using System.Collections.Specialized;
+    using System.Collections.ObjectModel;
 	using System.IO;
     using System;
 	using System.Linq;
@@ -14,8 +15,9 @@ namespace Jukebox.Server.Services {
 
 	[ServiceBehavior(
 		InstanceContextMode = InstanceContextMode.Single,
-		ConcurrencyMode = ConcurrencyMode.Multiple)]
-	class JukeboxService : IPolicyService, IPlaylistService, ISearchService, IPlayerService {
+		ConcurrencyMode = ConcurrencyMode.Multiple,
+        MaxItemsInObjectGraph = int.MaxValue)]
+	class JukeboxService : IPolicyService, IPlaylistService, ISearchService, IPlayerService, IUserService {
 		public JukeboxService() {
 			Player.Instance.TrackChanged += OnCurrentTrackChanged;
 			Player.Instance.Playlist.Tracks.CollectionChanged += OnPlaylistChanged;
@@ -34,9 +36,9 @@ namespace Jukebox.Server.Services {
 
 		// ISearchService --------------------------------------------------------------------------
 
-		public IList<Track> Search(string query) {
-			return DataProviderManager.Instance.Search(query).ToList();
-		}
+		public SearchResult Search(string query, List<TrackSourceComboItem> sources, int pageIndex, int pageSize) {
+            return DataProviderManager.Instance.Search(query, sources, pageIndex, pageSize);
+        }
 
 		// IPlaylistService ------------------------------------------------------------------------
 
@@ -47,12 +49,10 @@ namespace Jukebox.Server.Services {
         public void SetPlaylist(Playlist playlist) {
             foreach (Track t1 in Player.Instance.Playlist.Tracks)
             {
-                string hashT1 = t1.GetHash();
                 for (int i = 0; i < playlist.Tracks.Count; i ++)
                 {
                     Track t2 = playlist.Tracks[i];
-                    string hashT2 = t2.GetHash();
-                    if (hashT1 == hashT2)
+                    if (t1.Id == t2.Id)
                     {
                         playlist.Tracks[i] = t1;
                     }
@@ -62,7 +62,9 @@ namespace Jukebox.Server.Services {
         }
 
 		public void Add(Track track) {
+            string userAddress = GetUserAddress();
 			Player.Instance.Playlist.Tracks.Add(track);
+            UserManager.Instance.AddActionPoints(userAddress, 1);
 		}
 
 		public void Remove(Track track) {
@@ -76,13 +78,7 @@ namespace Jukebox.Server.Services {
 
         public string Next()
         {
-            //var clientId = OperationContext.Current.SessionId.Split(';')[0];
-            //var clientId = OperationContext.Current.SessionId;
-
-            OperationContext context = OperationContext.Current;
-            MessageProperties prop = context.IncomingMessageProperties;
-            RemoteEndpointMessageProperty endpoint = prop[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-            string clientId = endpoint.Address;
+            string clientId = GetUserAddress();
 
 
             if (Player.Instance.CurrentTrack == null)
@@ -99,12 +95,37 @@ namespace Jukebox.Server.Services {
 
             int votes = _nextVotes.Count;
 
-            if (votes == Context.VOTES_TO_SKIP)
+            if (votes == Config.GetInstance().VotesToSkip)
             {
                 Player.Instance.Abort();
             }
 
-            return string.Format("Проголосовало {0} из {1}.", votes, Context.VOTES_TO_SKIP);
+            return string.Format("Проголосовало {0} из {1}.", votes, Config.GetInstance().VotesToSkip);
+        }
+
+        public string Shuffle()
+        {
+            string userAddress = GetUserAddress();
+
+            if (Player.Instance.Playlist.Tracks.Count == 0)
+            {
+                return "Плейлист пуст.";
+            }
+
+            if (!UserManager.Instance.CanUserPerformAction(userAddress))
+            {
+                return string.Format("Вы исчерпали лимит действий. Восстановление через: {0}.", UserManager.Instance.GetTimeForNextRestore().ToString(@"hh\:mm\:ss"));
+            }
+
+            ObservableCollection<Track> tracks = new ObservableCollection<Track>();
+            foreach (Track track in Player.Instance.Playlist.Tracks.OrderBy(x => Guid.NewGuid()))
+            {
+                tracks.Add(track);
+            }
+            Player.Instance.Playlist.Tracks = tracks;
+            UserManager.Instance.UserPerformAction(userAddress, ActionType.ShuffleAction);
+
+            return "";
         }
 
 		// IPlayerService --------------------------------------------------------------------------
@@ -118,9 +139,52 @@ namespace Jukebox.Server.Services {
             return Player.Instance.VolumeLevel;
         }
 
-        public void SetVolumeLevel(double value)
+        public string SetVolumeLevel(double value)
         {
+            string userAddress = GetUserAddress();
+            if (!UserManager.Instance.CanUserPerformAction(userAddress))
+            {
+                return "";
+            }
+
+            UserManager.Instance.UserChangeValueAction(userAddress, ActionType.VolumeChangeAction, Player.Instance.VolumeLevel, value);
+
             Player.Instance.VolumeLevel = value;
+            return "";
+        }
+
+        public string PlayOrPause()
+        {
+            string userAddress = GetUserAddress();
+
+            if (Player.Instance.CurrentTrack == null)
+            {
+                return "Сейчас не проигрывается ни одна песня.";
+            }
+
+            if (!UserManager.Instance.CanUserPerformAction(userAddress))
+            {
+                return string.Format("Вы исчерпали лимит действий. Восстановление через: {0}.", UserManager.Instance.GetTimeForNextRestore().ToString(@"hh\:mm\:ss"));
+            }
+
+            if (!Player.Instance.CurrentISound.Paused)
+            {
+                Player.Instance.CurrentISound.Paused = true;
+                UserManager.Instance.UserPerformAction(userAddress, ActionType.PauseOrPlayAction);
+            }
+            else
+            {
+                Player.Instance.CurrentISound.Paused = false;
+                UserManager.Instance.UserPerformAction(userAddress, ActionType.PauseOrPlayAction);
+            }
+
+            return "";
+        }
+
+        // IUserService --------------------------------------------------------------------------
+        public User GetUser()
+        {
+            return UserManager.Instance.GetUserInfo(GetUserAddress());
         }
 
 		private void OnCurrentTrackChanged(object sender, PlayerEventArgs e) {
@@ -142,6 +206,16 @@ namespace Jukebox.Server.Services {
 				a.OnTrackStateChanged(e.Track);
 			}*/
 		}
+
+        private string GetUserAddress()
+        {
+            OperationContext context = OperationContext.Current;
+            MessageProperties prop = context.IncomingMessageProperties;
+            RemoteEndpointMessageProperty endpoint = prop[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+            string clientId = endpoint.Address;
+
+            return clientId;
+        }
 
 		private InstanceContext InstanceContext { get; set; }
     }

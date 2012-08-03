@@ -39,7 +39,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\irrKlang.NET4.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -49,7 +51,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="DataProviders\DataProviderManager.cs" />
     <Compile Include="DataProviders\FileSystemDataProvider.cs" />
     <Compile Include="DataProviders\IDataProvider.cs" />
@@ -57,10 +59,14 @@
     <Compile Include="DataProviders\VKComDataProvider.cs" />
     <Compile Include="DataProviders\VKComDataProvider_new.cs" />
     <Compile Include="JukeboxServer.cs" />
+    <Compile Include="Models\ActionType.cs" />
     <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\Track.cs" />
     <Compile Include="Models\TrackSource.cs" />
+    <Compile Include="Models\TrackSourceComboItem.cs" />
     <Compile Include="Models\TrackState.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="JukeboxApplication.cs" />
     <Compile Include="PlayerEventArgs.cs" />
@@ -71,18 +77,21 @@
     <Compile Include="Services\IPlaylistServiceCallback.cs" />
     <Compile Include="Services\IPolicyService.cs" />
     <Compile Include="Services\ISearchService.cs" />
-    <Compile Include="Services\JuckeboxService.cs" />
+    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\JukeboxService.cs" />
+    <Compile Include="UserManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
+    <Content Include="app.config">
       <SubType>Designer</SubType>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="clientaccesspolicy.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

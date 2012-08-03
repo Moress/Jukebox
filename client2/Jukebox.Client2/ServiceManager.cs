@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Jukebox.Client2.JukeboxService;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using System.ServiceModel;
 
 namespace Jukebox.Client2
@@ -22,6 +23,7 @@ namespace Jukebox.Client2
         static SearchServiceClient _searchServiceClient;
         static PlaylistServiceClient _playlistServiceClient;
         static PlayerServiceClient _playerServiceClient;
+        static UserServiceClient _userServiceClient;
 
         public static EventHandler ChannelsWereChanged;
 
@@ -65,6 +67,18 @@ namespace Jukebox.Client2
             return _playlistServiceClient;
         }
 
+        public static UserServiceClient GetUserServiceClient()
+        {
+            if (_userServiceClient != null && _userServiceClient.State == CommunicationState.Faulted)
+            {
+                RecreateAllChannels();
+            }
+
+            if (_userServiceClient == null)
+                _userServiceClient = new UserServiceClient(_defaultBinding, new EndpointAddress(Host + "User"));
+            return _userServiceClient;
+        }
+
         /// <summary>
         /// Убивает все коммуникационные объекты и создает новые.
         /// </summary>
@@ -72,10 +86,13 @@ namespace Jukebox.Client2
         {
             KillChannel(_searchServiceClient);
             KillChannel(_playlistServiceClient);
+            KillChannel(_playerServiceClient);
+            KillChannel(_userServiceClient);
 
             _searchServiceClient = null;
             _playlistServiceClient = null;
             _playerServiceClient = null;
+            _userServiceClient = null;
 
             if (ChannelsWereChanged != null)
                 ChannelsWereChanged(null, null);

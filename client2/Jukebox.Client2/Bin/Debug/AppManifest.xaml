@@ -1,16 +1,26 @@
 ﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="Jukebox.Client2" EntryPointType="Jukebox.Client2.App" RuntimeVersion="4.0.50826.0">
   <Deployment.Parts>
     <AssemblyPart x:Name="Jukebox.Client2" Source="Jukebox.Client2.dll" />
+    <AssemblyPart x:Name="Microsoft.CSharp" Source="Microsoft.CSharp.dll" />
     <AssemblyPart x:Name="System.ServiceModel.Extensions" Source="System.ServiceModel.Extensions.dll" />
     <AssemblyPart x:Name="System.ServiceModel.NetTcp" Source="System.ServiceModel.NetTcp.dll" />
     <AssemblyPart x:Name="System.ServiceModel.PollingDuplex" Source="System.ServiceModel.PollingDuplex.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data" Source="System.Windows.Controls.Data.dll" />
     <AssemblyPart x:Name="System.Windows.Controls" Source="System.Windows.Controls.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Toolkit" Source="System.Windows.Controls.Toolkit.dll" />
     <AssemblyPart x:Name="Telerik.Windows.Controls" Source="Telerik.Windows.Controls.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data.Input" Source="System.Windows.Controls.Data.Input.dll" />
+    <AssemblyPart x:Name="System.ComponentModel.DataAnnotations" Source="System.ComponentModel.DataAnnotations.dll" />
+    <AssemblyPart x:Name="System.Windows.Data" Source="System.Windows.Data.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Toolkit.Internals" Source="System.Windows.Controls.Toolkit.Internals.dll" />
+    <AssemblyPart Source="ru/Microsoft.CSharp.resources.dll" />
     <AssemblyPart Source="ru/System.ServiceModel.Extensions.resources.dll" />
     <AssemblyPart Source="ru/System.ServiceModel.NetTcp.resources.dll" />
     <AssemblyPart Source="ru/System.ServiceModel.PollingDuplex.resources.dll" />
     <AssemblyPart Source="ru/System.Windows.Controls.resources.dll" />
+    <AssemblyPart Source="ru/System.Windows.Controls.Data.resources.dll" />
+    <AssemblyPart Source="ru/System.Windows.Controls.Data.Input.resources.dll" />
+    <AssemblyPart Source="ru/System.ComponentModel.DataAnnotations.resources.dll" />
+    <AssemblyPart Source="ru/System.Windows.Data.resources.dll" />
   </Deployment.Parts>
 </Deployment>
