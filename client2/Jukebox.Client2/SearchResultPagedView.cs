@@ -27,26 +27,31 @@ namespace Jukebox.Client2
         }
 
 
-        private readonly SearchServiceClient searchServiceClient;
+        private SearchServiceClient searchServiceClient;
         ObservableCollection<Track> foundTracks = new ObservableCollection<Track>();
 
-        public SearchResultPagedView()
+        private void InitSearchClient()
         {
             searchServiceClient = new SearchServiceClient();
             searchServiceClient.SearchCompleted += (sender, ea) =>
-                                             {
-                                                 ItemCount = ea.Result.TotalCount;
-                                                 TotalItemCount = ea.Result.TotalCount;
-                                                 foundTracks = ea.Result.FoundTracks;
-                                                 NotBusy();
-                                                 OnCollectionChanged();
-                                             };
+            {
+                ItemCount = ea.Result.TotalCount;
+                TotalItemCount = ea.Result.TotalCount;
+                foundTracks = ea.Result.FoundTracks;
+                NotBusy();
+                OnCollectionChanged();
+            };
+        }
 
+        public SearchResultPagedView()
+        {
+            InitSearchClient();
             PageChanged += (sender, ea) => CallSearch();
         }
 
         public void CallSearch()
         {
+            InitSearchClient();
             Busy();
             searchServiceClient.SearchAsync(query, sources, PageIndex, PageSize);
         }

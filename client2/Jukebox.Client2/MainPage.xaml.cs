@@ -33,8 +33,6 @@ namespace Jukebox.Client2
         /// </summary>
         DispatcherTimer _mainTimer = new DispatcherTimer();
 
-        int counter;
-
         public MainPage()
         {
             InitializeComponent();
@@ -182,9 +180,6 @@ namespace Jukebox.Client2
 
         void OnChannelsWereChanged(object sender, EventArgs e)
         {
-            /*var searchService = ServiceManager.GetSearchServiceClient();
-            searchService.SearchCompleted += new EventHandler<SearchCompletedEventArgs>(OnSearchCompleted);*/
-
             var playlistService = ServiceManager.GetPlaylistServiceClient();
             playlistService.GetPlaylistCompleted += new EventHandler<GetPlaylistCompletedEventArgs>(OnGetPlaylistCompleted);
             playlistService.AddCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(OnAddCompleted);
