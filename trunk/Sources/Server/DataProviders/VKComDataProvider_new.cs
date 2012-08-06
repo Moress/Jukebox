@@ -20,7 +20,7 @@ namespace Jukebox.Server.DataProviders
 
         public TrackSource GetSourceType()
         {
-            return 0;
+            return TrackSource.VK;
         }
 
         public IList<Track> Search(string query)
@@ -56,16 +56,11 @@ namespace Jukebox.Server.DataProviders
                 content = tableRegex.Match(content).Groups[1].Value;
                 content = StripHtmlEntities(content) + "</div></div>";
 
-                Debug.Write(content.Length);
-
                 // Нет метки о том, что ничего не найдено
                 if (content != "")
                 {
                     var doc = XDocument.Load(new StringReader(content));
                     XElement audioElement;
-                    var cachedTracks = new List<Track>();
-                    var nonCachedTracks = new List<Track>();
-                    var alreadyAddedTracks = new List<string>();
 
                     var elements = doc.Root.Elements();
 
@@ -81,7 +76,6 @@ namespace Jukebox.Server.DataProviders
                         audioElement = divTrack.XPathSelectElements("div").Where(el => el.Attribute("class").Value == "audio").First();
                         var trackUri = audioElement.XPathSelectElement("table/tr/td/input").Attribute("value").Value;
 
-
                         var terms = trackUri.Replace("\'", "").Split(',');
 
                         var startId = terms[0].IndexOf("audio/") + "audio/".Length;
@@ -90,8 +84,8 @@ namespace Jukebox.Server.DataProviders
                         track.Id = terms[0].Substring(startId, finishId - startId);
                         track.Uri = new Uri(terms[0]);
 
-                        track.Singer = audioElement.XPathSelectElements("table/tr/td/div/span/a").First().Value;
-                        track.Title = audioElement.XPathSelectElements("table/tr/td/div/b/a").First().Value;
+                        track.Title = audioElement.XPathSelectElements("table/tr/td/div/span/a").First().Value;
+                        track.Singer = audioElement.XPathSelectElements("table/tr/td/div/b/a").First().Value;
 
                         var duration = audioElement.XPathSelectElements("table/tr/td/div").
                             Where(el => el.Attribute("class").Value == "duration fl_r").First().Value;
@@ -100,26 +94,8 @@ namespace Jukebox.Server.DataProviders
                         TimeSpan.TryParse("00:" + duration, out tmp);
                         track.Duration = tmp;
 
-                        if (alreadyAddedTracks.Contains(track.GetHash()))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            alreadyAddedTracks.Add(track.GetHash());
-                        }
-
-                        if (File.Exists(@"c:\temp\jukebox\" + track.GetHash() + ".mp3"))
-                        {
-                            cachedTracks.Add(track);
-                        }
-                        else
-                        {
-                            nonCachedTracks.Add(track);
-                        }
+                        result.Add(track);
                     }
-                    result.AddRange(cachedTracks.ToArray());
-                    result.AddRange(nonCachedTracks.ToArray());
                 }
             }
             catch (Exception e)

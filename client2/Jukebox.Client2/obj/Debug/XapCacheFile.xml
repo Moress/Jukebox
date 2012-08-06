@@ -1,5 +1,5 @@
-﻿<xapCache source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\Bin\Debug\Jukebox.Client2.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="06.08.2012 0:03:06">
-  <file source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.dll" archivePath="Jukebox.Client2.dll" lastWriteTime="06.08.2012 0:03:03" />
+﻿<xapCache source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\Bin\Debug\Jukebox.Client2.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="06.08.2012 18:22:41">
+  <file source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\obj\Debug\Jukebox.Client2.dll" archivePath="Jukebox.Client2.dll" lastWriteTime="06.08.2012 18:22:39" />
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\Microsoft.CSharp.dll" archivePath="Microsoft.CSharp.dll" lastWriteTime="26.08.2010 3:17:48" />
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.ServiceModel.Extensions.dll" archivePath="System.ServiceModel.Extensions.dll" lastWriteTime="26.08.2010 3:17:48" />
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.ServiceModel.NetTcp.dll" archivePath="System.ServiceModel.NetTcp.dll" lastWriteTime="26.08.2010 3:17:48" />
@@ -21,6 +21,6 @@
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.Windows.Data.resources.dll" archivePath="ru\System.Windows.Data.resources.dll" lastWriteTime="26.08.2010 6:33:38" />
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.Windows.Controls.Data.Input.resources.dll" archivePath="ru\System.Windows.Controls.Data.Input.resources.dll" lastWriteTime="26.08.2010 6:33:38" />
   <file source="c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\ru\System.ComponentModel.DataAnnotations.resources.dll" archivePath="ru\System.ComponentModel.DataAnnotations.resources.dll" lastWriteTime="26.08.2010 6:33:38" />
-  <file source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\ServiceReferences.ClientConfig" archivePath="ServiceReferences.ClientConfig" lastWriteTime="02.08.2012 22:53:06" />
+  <file source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\ServiceReferences.ClientConfig" archivePath="ServiceReferences.ClientConfig" lastWriteTime="06.08.2012 18:09:59" />
   <file source="C:\Jukebox\Jukebox\client2\Jukebox.Client2\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="31.07.2012 20:40:41" />
 </xapCache>

@@ -18,10 +18,6 @@
                     <binaryMessageEncoding />
                     <tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
                 </binding>
-                <binding name="NetTcpBinding_IUserService1">
-                    <binaryMessageEncoding />
-                    <tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
-                </binding>
             </customBinding>
         </bindings>
         <client>
@@ -37,9 +33,6 @@
             <endpoint address="net.tcp://localhost:4502/Search" binding="customBinding"
                 bindingConfiguration="NetTcpBinding_ISearchService" contract="JukeboxService.ISearchService"
                 name="NetTcpBinding_ISearchService" />
-            <endpoint address="net.tcp://localhost:4502/User" binding="customBinding"
-                bindingConfiguration="NetTcpBinding_IUserService1" contract="JukeboxService.IUserService"
-                name="NetTcpBinding_IUserService1" />
         </client>
     </system.serviceModel>
 </configuration>

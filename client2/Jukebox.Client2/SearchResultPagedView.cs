@@ -32,7 +32,7 @@ namespace Jukebox.Client2
 
         private void InitSearchClient()
         {
-            searchServiceClient = new SearchServiceClient();
+            searchServiceClient = ServiceManager.GetSearchServiceClient();
             searchServiceClient.SearchCompleted += (sender, ea) =>
             {
                 ItemCount = ea.Result.TotalCount;

@@ -49,20 +49,16 @@ namespace Jukebox.Server.DataProviders {
         private List<Track> DeleteDuplicates(List<Track> results)
         {
             List<Track> clearResults = new List<Track>();
-
-            var cachedTracks = from cachedtrack in results
-                               where cachedtrack.Source == TrackSource.Cache
-                               select cachedtrack;
-            clearResults.AddRange(cachedTracks);
-
-            var hashValues = from cachedtrack in results
-                             where cachedtrack.Source == TrackSource.Cache
-                             select cachedtrack.Id;
-
-            var nonCachedTracks = from nonCachedTrack in results
-                                  where (nonCachedTrack.Source != TrackSource.Cache) && (!hashValues.Contains(nonCachedTrack.Id))
-                                  select nonCachedTrack;
-            clearResults.AddRange(nonCachedTracks);
+           
+            clearResults = (from groupedTrack in results
+                            group groupedTrack by groupedTrack.Id into trackGroup
+                            let trackFromCache = trackGroup.Where(x => x.Source == TrackSource.Cache).FirstOrDefault()
+                            let trackFromVK = trackGroup.Where(x => x.Source == TrackSource.VK).FirstOrDefault()
+                            select trackFromCache != null ?
+                                   trackFromCache : ( trackFromVK != null ?
+                                                      trackFromVK : null )
+                            )
+                            .ToList();
 
             return clearResults;
         }
