@@ -7,11 +7,14 @@
     <AssemblyPart x:Name="System.ServiceModel.PollingDuplex" Source="System.ServiceModel.PollingDuplex.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Data" Source="System.Windows.Controls.Data.dll" />
     <AssemblyPart x:Name="System.Windows.Controls" Source="System.Windows.Controls.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Input.Toolkit" Source="System.Windows.Controls.Input.Toolkit.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Toolkit" Source="System.Windows.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Data" Source="System.Windows.Data.dll" />
+    <AssemblyPart x:Name="System.Xml.Linq" Source="System.Xml.Linq.dll" />
+    <AssemblyPart x:Name="System.Xml.Serialization" Source="System.Xml.Serialization.dll" />
     <AssemblyPart x:Name="Telerik.Windows.Controls" Source="Telerik.Windows.Controls.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Data.Input" Source="System.Windows.Controls.Data.Input.dll" />
     <AssemblyPart x:Name="System.ComponentModel.DataAnnotations" Source="System.ComponentModel.DataAnnotations.dll" />
-    <AssemblyPart x:Name="System.Windows.Data" Source="System.Windows.Data.dll" />
     <AssemblyPart x:Name="System.Windows.Controls.Toolkit.Internals" Source="System.Windows.Controls.Toolkit.Internals.dll" />
     <AssemblyPart Source="ru/Microsoft.CSharp.resources.dll" />
     <AssemblyPart Source="ru/System.ServiceModel.Extensions.resources.dll" />
@@ -19,8 +22,10 @@
     <AssemblyPart Source="ru/System.ServiceModel.PollingDuplex.resources.dll" />
     <AssemblyPart Source="ru/System.Windows.Controls.resources.dll" />
     <AssemblyPart Source="ru/System.Windows.Controls.Data.resources.dll" />
+    <AssemblyPart Source="ru/System.Windows.Data.resources.dll" />
+    <AssemblyPart Source="ru/System.Xml.Linq.resources.dll" />
+    <AssemblyPart Source="ru/System.Xml.Serialization.resources.dll" />
     <AssemblyPart Source="ru/System.Windows.Controls.Data.Input.resources.dll" />
     <AssemblyPart Source="ru/System.ComponentModel.DataAnnotations.resources.dll" />
-    <AssemblyPart Source="ru/System.Windows.Data.resources.dll" />
   </Deployment.Parts>
 </Deployment>

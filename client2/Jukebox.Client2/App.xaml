@@ -71,23 +71,25 @@
                                     <vsm:VisualState x:Name="DropImpossible" />
                                 </vsm:VisualStateGroup>
                             </vsm:VisualStateManager.VisualStateGroups>
-                            <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}"
+                            <Grid>
+                                <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="Transparent" BorderThickness="0">
+                                    <ItemsPresenter /> 
+                                </ScrollViewer>
                                 <Grid>
-                                    <ItemsPresenter />
                                     <Grid x:Name="DropCueElement" HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Top" IsHitTestVisible="False" dragDrop:RadDragAndDropManager.AllowDrop="True"
-                                            Visibility="Collapsed" Margin="-2.">
+                                                    VerticalAlignment="Top" IsHitTestVisible="False" dragDrop:RadDragAndDropManager.AllowDrop="True"
+                                                    Visibility="Collapsed" Margin="-2.">
                                         <Ellipse Width="5" Height="5" Fill="DarkSlateGray"
-                                                HorizontalAlignment="Left" IsHitTestVisible="False"/>
+                                                        HorizontalAlignment="Left" IsHitTestVisible="False"/>
                                         <Ellipse Width="5" Height="5" Fill="DarkSlateGray"
-                                                HorizontalAlignment="Right" />
+                                                        HorizontalAlignment="Right" />
                                         <Rectangle Height="3" VerticalAlignment="Center" IsHitTestVisible="False"
-                                                Fill="DarkSlateGray" />
+                                                        Fill="DarkSlateGray" />
                                     </Grid>
                                 </Grid>
-                            </ScrollViewer>
+                            </Grid>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -101,7 +103,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
                         <Grid x:Name="RootElement">
-                            <CheckBox ClickMode="Press" Content="{Binding Path=Source}" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}" />
+                            <CheckBox ClickMode="Press" Content="{Binding Path=Source}" IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

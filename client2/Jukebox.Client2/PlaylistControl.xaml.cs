@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Jukebox.Client2.JukeboxService;
+using System.Collections.ObjectModel;
 
 namespace Jukebox.Client2
 {
@@ -18,6 +19,18 @@ namespace Jukebox.Client2
         public PlaylistControl()
         {
             InitializeComponent();
+        }
+
+        private void UpInPlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            if (PlaylistListBox.SelectedItem != null)
+            {
+                Track selectedTrack = PlaylistListBox.SelectedItem as Track;
+                var itemsSource = PlaylistListBox.ItemsSource as IList<Track>;
+                itemsSource.Remove(selectedTrack);
+                itemsSource.Insert(0, selectedTrack);
+                ((MainPage)App.Current.RootVisual).UpdatePlaylist();
+            }
         }
     }
 }

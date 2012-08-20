@@ -5,7 +5,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:my="clr-namespace:Jukebox.Client2"
     xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
-             xmlns:telerik="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls"
+    xmlns:telerik="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls"
+    xmlns:inputToolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
@@ -65,6 +66,12 @@
                                 VerticalAlignment="Center"
                                 toolkit:DockPanel.Dock="Right"/>
                         </toolkit:DockPanel>
+                        <inputToolkit:ContextMenuService.ContextMenu>
+                            <inputToolkit:ContextMenu>
+                                <inputToolkit:MenuItem Header="Переместить трек вверх" Click="UpInPlaylist_Click"
+                                                       IsEnabled="True"/>
+                            </inputToolkit:ContextMenu>
+                        </inputToolkit:ContextMenuService.ContextMenu>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

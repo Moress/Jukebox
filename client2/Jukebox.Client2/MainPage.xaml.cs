@@ -51,7 +51,7 @@ namespace Jukebox.Client2
             ServiceManager.RecreateAllChannels();
 
             _model.Sources = TrackSourceComboItem.GetList();
-
+           
             SearchResultsControl1.QueryTextBox.KeyDown += new KeyEventHandler(QueryTextBox_KeyDown);
 
             SearchResultsControl1.DataContext = _model;
@@ -315,16 +315,21 @@ namespace Jukebox.Client2
 					listBox.SelectedIndex = insertIndex;
 				});
 
-                var playlistService = ServiceManager.GetPlaylistServiceClient();
-                Playlist playlist = new Playlist();
-                playlist.Tracks = new ObservableCollection<Track>();
-                foreach(Track t in listBox.ItemsSource)
-                {
-                    playlist.Tracks.Add(t);
-                }
-                playlistService.SetPlaylistAsync(playlist);
+                UpdatePlaylist();
 			}
 		}
+
+        public void UpdatePlaylist()
+        {
+            var playlistService = ServiceManager.GetPlaylistServiceClient();
+            Playlist playlist = new Playlist();
+            playlist.Tracks = new ObservableCollection<Track>();
+            foreach (Track t in PlaylistControl1.PlaylistListBox.ItemsSource)
+            {
+                playlist.Tracks.Add(t);
+            }
+            playlistService.SetPlaylistAsync(playlist);
+        }
 
 		private void OnDropQuery(object sender, DragDropQueryEventArgs e)
 		{

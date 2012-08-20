@@ -13,6 +13,9 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using Jukebox.Client2.JukeboxService;
 using System.ComponentModel;
+using System.ServiceModel;
+using Jukebox.Client2.Misc;
+
 
 namespace Jukebox.Client2
 {
@@ -81,6 +84,7 @@ namespace Jukebox.Client2
         {
             get
             {
+                
                 return _trackCount;
             }
             set
@@ -157,9 +161,47 @@ namespace Jukebox.Client2
             }
         }
 
-        public void Test()
+        private bool _playerPanelIsExpanded;
+
+        public bool PlayerPanelIsExpanded
         {
-           
+            get
+            {
+                try
+                {
+                    string isExpanded = IsolatedStorageManager.GetValueByKey("playerPanelIsExpanded") as string;
+                    if (isExpanded != null)
+                    {
+                        return bool.Parse(isExpanded);
+                    }
+                    return _playerPanelIsExpanded;
+                }
+                catch
+                {
+                    return _playerPanelIsExpanded;
+                }
+            }
+            set
+            {
+                IsolatedStorageManager.SetKeyValue("playerPanelIsExpanded", value.ToString());
+                _playerPanelIsExpanded = value;
+                OnPropertyChanged("PlayerPanelIsExpanded");
+            }
+        }
+
+        public MainViewModel()
+        {
+            _instance = this;
+        }
+
+        private static MainViewModel _instance;
+
+        public static MainViewModel Instance
+        {
+            get
+            {
+                return _instance;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -169,5 +211,6 @@ namespace Jukebox.Client2
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
         }
+  
     }
 }

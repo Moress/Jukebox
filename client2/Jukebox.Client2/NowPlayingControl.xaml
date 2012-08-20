@@ -24,7 +24,10 @@
             </LinearGradientBrush>
         </Grid.Background>
         <toolkit:DockPanel Margin="10,0,10,0">
-            <toolkit:Expander VerticalAlignment="Center" Style="{StaticResource ExpanderStyle}">
+            <toolkit:Expander VerticalAlignment="Center"
+                              Style="{StaticResource ExpanderStyle}"
+                              IsExpanded="{Binding PlayerPanelIsExpanded, Mode=TwoWay}"
+                             >
                 <toolkit:Expander.Header>
                     <toolkit:DockPanel  LastChildFill="False">
                         <RichTextBox
