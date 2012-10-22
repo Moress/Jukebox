@@ -120,13 +120,24 @@ namespace Jukebox.Client2
         {
             get
             {
+                ObservableCollection<TrackSourceComboItem> cachedSources = IsolatedStorageManager.GetValueByKey("sources") as ObservableCollection<TrackSourceComboItem>;
+                if (cachedSources != null)
+                {
+                    _sources = cachedSources;
+                }
                 return _sources;
             }
             set
             {
                 _sources = value;
+                IsolatedStorageManager.SetKeyValue("sources", _sources);
                 OnPropertyChanged("Sources");
             }
+        }
+
+        public void UpdateSources()
+        {
+            Sources = _sources;
         }
 
         private int _userActionPoints;

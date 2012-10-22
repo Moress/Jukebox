@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Name="QueryTextBox" />
-            <ComboBox Grid.Column="1" Name="SourceMultiCheckBox" ItemsSource="{Binding Sources}" Style="{StaticResource MultiSelComboBoxStyle}" Width="26" >
+            <ComboBox Grid.Column="1" Name="SourceMultiCheckBox" ItemsSource="{Binding Sources}" Style="{StaticResource MultiSelComboBoxStyle}" Width="26" GotFocus="SourceMultiCheckBox_GotFocus">
                 <ToolTipService.ToolTip>
                     <ToolTip>
                         <ItemsControl ItemsSource="{Binding Sources}">

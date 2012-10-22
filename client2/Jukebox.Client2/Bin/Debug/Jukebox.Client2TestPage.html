@@ -32,11 +32,11 @@
               return;
             }
 
-            var errMsg = "Неуправляемая ошибка в приложении Silverlight" +  appSource + "\n" ;
+            var errMsg = "Unhandled Error in Silverlight Application " +  appSource + "\n" ;
 
-            errMsg += "Код: "+ iErrorCode + "    \n";
-            errMsg += "Категория: " + errorType + "       \n";
-            errMsg += "Сообщение: " + args.ErrorMessage + "     \n";
+            errMsg += "Code: "+ iErrorCode + "    \n";
+            errMsg += "Category: " + errorType + "       \n";
+            errMsg += "Message: " + args.ErrorMessage + "     \n";
 
             if (errorType == "ParserError") {
                 errMsg += "File: " + args.xamlFile + "     \n";
@@ -48,7 +48,7 @@
                     errMsg += "Line: " + args.lineNumber + "     \n";
                     errMsg += "Position: " +  args.charPosition + "     \n";
                 }
-                errMsg += "Имя метода: " + args.methodName + "     \n";
+                errMsg += "MethodName: " + args.methodName + "     \n";
             }
 
             throw new Error(errMsg);
@@ -65,7 +65,7 @@
 		  <param name="minRuntimeVersion" value="4.0.50826.0" />
 		  <param name="autoUpgrade" value="true" />
 		  <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=4.0.50826.0" style="text-decoration:none">
- 			  <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Получить Microsoft Silverlight" style="border-style:none"/>
+ 			  <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Get Microsoft Silverlight" style="border-style:none"/>
 		  </a>
 	    </object><iframe id="_sl_historyFrame" style="visibility:hidden;height:0px;width:0px;border:0px"></iframe></div>
     </form>

@@ -50,7 +50,10 @@ namespace Jukebox.Client2
             ServiceManager.ChannelsWereChanged += new EventHandler(OnChannelsWereChanged);
             ServiceManager.RecreateAllChannels();
 
-            _model.Sources = TrackSourceComboItem.GetList();
+            if (_model.Sources == null)
+            {
+                _model.Sources = TrackSourceComboItem.GetList();
+            }
            
             SearchResultsControl1.QueryTextBox.KeyDown += new KeyEventHandler(QueryTextBox_KeyDown);
 

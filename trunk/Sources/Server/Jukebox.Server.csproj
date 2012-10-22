@@ -58,6 +58,9 @@
     <Compile Include="DataProviders\ProstopleerDataProvider.cs" />
     <Compile Include="DataProviders\VKComDataProvider.cs" />
     <Compile Include="DataProviders\VKComDataProvider_new.cs" />
+    <Compile Include="DataProviders\WebDownload.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="JukeboxServer.cs" />
     <Compile Include="Models\ActionType.cs" />
     <Compile Include="Models\Playlist.cs" />

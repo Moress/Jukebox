@@ -83,6 +83,13 @@ namespace Jukebox.Server
                 try { ActionPointsRestoreTime = Convert.ToInt32(config.AppSettings.Settings["actionPointsRestoreTime"].Value); }
                 catch { }
             }
+            if ((config.AppSettings.Settings["downloadTimeout"] != null) &&
+                (config.AppSettings.Settings["downloadTimeout"].Value != null) &&
+                (config.AppSettings.Settings["downloadTimeout"].Value != ""))
+            {
+                try { DownloadTimeout = Convert.ToInt32(config.AppSettings.Settings["downloadTimeout"].Value); }
+                catch { }
+            }
 
             // dialog for special devices
             if (!useDefaultDevice)
@@ -148,6 +155,8 @@ namespace Jukebox.Server
         int initialActionPoints = 4;
         // user manager update milliseconds
         int actionPointsRestoreTime = 60 * 1000 * 10; // 10 min
+        // download file timeout
+        int downloadTimeout = 60000;
 
         public int VotesToSkip
         {
@@ -258,6 +267,18 @@ namespace Jukebox.Server
             set
             {
                 vkPassword = value;
+            }
+        }
+
+        public int DownloadTimeout
+        {
+            get
+            {
+                return downloadTimeout;
+            }
+            set
+            {
+                downloadTimeout = value;
             }
         }
 

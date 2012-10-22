@@ -36,7 +36,7 @@ namespace Jukebox.Server.DataProviders
                 PingOptions pingerOptions = new PingOptions(255, true);
                 string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
                 byte[] buffer = Encoding.ASCII.GetBytes(data);
-                int timeout = 2000;
+                int timeout = 60000;
                 string hostName = @"vk.com";
                 PingReply reply = pinger.Send(hostName, timeout, buffer, pingerOptions);
                 if (reply.Status != IPStatus.Success)
@@ -159,7 +159,9 @@ namespace Jukebox.Server.DataProviders
         {
             try
             {
-                WebClient c = new WebClient();
+                WebDownload c = new WebDownload();
+                c.Timeout = Config.GetInstance().DownloadTimeout;
+
                 return c.DownloadData(track.Uri);
             }
             catch (Exception e)
@@ -170,20 +172,23 @@ namespace Jukebox.Server.DataProviders
         }
 
         private bool Auth(String email, String pass, out Cookie cookie)
-        {
+        {            
             HttpWebRequest wrGETURL = (HttpWebRequest)System.Net.WebRequest.Create(
-                "http://vk.com/login.php?m=1&email=" + email + "&pass=" + pass
+                "http://login.vk.com/?act=login&email=" + email + "&pass=" + pass
             );
+
             wrGETURL.AllowAutoRedirect = false;
             wrGETURL.Timeout = 100000;
-            string headers = wrGETURL.GetResponse().Headers.ToString();
+            
+            string location  = wrGETURL.GetResponse().Headers["Location"];
 
-            HttpWebResponse myHttpWebResponse = (HttpWebResponse)wrGETURL.GetResponse();
-            StreamReader myStreamReadermy = new StreamReader(myHttpWebResponse.GetResponseStream(), Encoding.GetEncoding(1251));
-            string page = myStreamReadermy.ReadToEnd();
+            HttpWebRequest redirectRequest = (HttpWebRequest)System.Net.WebRequest.Create(location);
+            redirectRequest.AllowAutoRedirect = false;
+            redirectRequest.Timeout = 100000;
+            string redirectHeaders = redirectRequest.GetResponse().Headers.ToString();
 
-            Regex sidregex = new Regex("sid=([a-z0-9]+); exp");
-            Match ssid = sidregex.Match(headers);
+            Regex sidregex = new Regex("remixsid=([a-z0-9]+); exp");
+            Match ssid = sidregex.Match(redirectHeaders);
             string sid = ssid.Groups[1].Value;
             cookie = new Cookie("remixsid", sid, "/", ".vk.com");
 
@@ -195,4 +200,6 @@ namespace Jukebox.Server.DataProviders
         }
 
     }
+
+   
 }

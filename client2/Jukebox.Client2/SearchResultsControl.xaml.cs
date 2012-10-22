@@ -32,5 +32,10 @@ namespace Jukebox.Client2
             // Отмечаем, чтобы убрать кнопку
             track.IsAdded = true;
         }
+
+        private void SourceMultiCheckBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            MainViewModel.Instance.UpdateSources();
+        }
     }
 }
