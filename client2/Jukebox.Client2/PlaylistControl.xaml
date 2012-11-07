@@ -44,6 +44,7 @@
                                                >
                                         <Run Text="{Binding Singer}" />
                                     </Hyperlink>
+                                    <Run Text=" "/>
                                 </Paragraph>
                             </RichTextBox>
                             <TextBlock

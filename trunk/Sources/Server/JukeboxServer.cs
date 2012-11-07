@@ -18,7 +18,7 @@ namespace Jukebox.Server {
             var c = new UserManager();
 
             a.DataProviders.Add(new FileSystemDataProvider());
-            a.DataProviders.Add(new VKComDataProvider());
+            a.DataProviders.Add(new VKComDataProvider_new());
 
             NetTcpBinding tcpBinding = new NetTcpBinding(SecurityMode.None);
             

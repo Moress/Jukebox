@@ -37,11 +37,21 @@ namespace Jukebox.Server.DataProviders
                     }
                 }
 
-                var url = "http://vk.com/al_search.php?section=audio&q=" + HttpUtility.HtmlEncode(query) + "&name=1";
+                var url = "http://vk.com/al_search.php";
 
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
                 request.CookieContainer = new CookieContainer();
                 request.CookieContainer.Add(_cookie);
+                request.ContentType = @"application/x-www-form-urlencoded";
+                request.Method = "POST";
+
+                string parameters = "al=1&c[q]=" + HttpUtility.UrlEncode(query).ToUpper() + "&c[section]=audio";
+                byte[] message = Encoding.UTF8.GetBytes(parameters);
+                using (Stream requestStream = request.GetRequestStream())
+                {
+                    requestStream.Write(message, 0, message.Length);
+                    requestStream.Close();
+                }
 
                 var responseStream = request.GetResponse().GetResponseStream();
                 string content = "";
@@ -51,14 +61,16 @@ namespace Jukebox.Server.DataProviders
                     content = reader.ReadToEnd();
                 }
 
-                Regex tableRegex = new Regex(@"(<div id=""results""(.|\n)*>(.|\n)*)<div class=""audios_row clear_fix""", RegexOptions.Multiline);
 
-                content = tableRegex.Match(content).Groups[1].Value;
-                content = StripHtmlEntities(content) + "</div></div>";
+
+                string techInfo = @"(<!--.*<!>|<!--.*->|<!>)";
+                content = Regex.Replace(content, techInfo, String.Empty);
 
                 // Нет метки о том, что ничего не найдено
                 if (content != "")
                 {
+                    content = "<div>" + content + "</div>";
+                    content = StripHtmlEntities(content);
                     var doc = XDocument.Load(new StringReader(content));
                     XElement audioElement;
 
@@ -66,15 +78,15 @@ namespace Jukebox.Server.DataProviders
 
                     foreach (var divTrack in elements)
                     {
-                        var check = divTrack.XPathSelectElements("div").First();
-                        if (check.Attribute("class").Value == "audios_row clear_fix")
+                        var track = new Track();
+                        audioElement = divTrack;
+
+                        if (audioElement.FirstAttribute.Value == "search_more_results")
                         {
                             break;
                         }
 
-                        var track = new Track();
-                        audioElement = divTrack.XPathSelectElements("div").Where(el => el.Attribute("class").Value == "audio").First();
-                        var trackUri = audioElement.XPathSelectElement("table/tr/td/input").Attribute("value").Value;
+                        var trackUri = audioElement.XPathSelectElement("div/table/tr/td/input").Attribute("value").Value;
 
                         var terms = trackUri.Replace("\'", "").Split(',');
 
@@ -84,15 +96,21 @@ namespace Jukebox.Server.DataProviders
                         track.Id = terms[0].Substring(startId, finishId - startId);
                         track.Uri = new Uri(terms[0]);
 
-                        track.Title = audioElement.XPathSelectElements("table/tr/td/div/span/a").First().Value;
-                        track.Singer = audioElement.XPathSelectElements("table/tr/td/div/b/a").First().Value;
+                        string titleTag = audioElement.XPathSelectElements("div/table/tr/td/div/span").First().ToString(SaveOptions.DisableFormatting);
+                        track.Title = PrepareTitle(titleTag);
+                        string singerTag = audioElement.XPathSelectElements("div/table/tr/td/div/b/a").First().ToString(SaveOptions.DisableFormatting);
+                        track.Singer = PrepareTitle(singerTag);
 
-                        var duration = audioElement.XPathSelectElements("table/tr/td/div").
+                        var duration = audioElement.XPathSelectElements("div/table/tr/td/div").
                             Where(el => el.Attribute("class").Value == "duration fl_r").First().Value;
 
                         TimeSpan tmp;
                         TimeSpan.TryParse("00:" + duration, out tmp);
                         track.Duration = tmp;
+
+                        track.Source = TrackSource.VK;
+
+                        track.Id = track.GetHash();
 
                         result.Add(track);
                     }
@@ -105,6 +123,16 @@ namespace Jukebox.Server.DataProviders
             }
 
             return new ReadOnlyCollection<Track>(result);
+        }
+
+        string PrepareTitle(string content)
+        {
+            string patternTwoTags = "</span><span .*?>";
+            content = Regex.Replace(content, patternTwoTags, " ");
+            string patternTag = "<.*?>";
+            content = Regex.Replace(content, patternTag, String.Empty);
+            content = content.Trim();
+            return content;
         }
 
         string StripHtmlEntities(string content)
@@ -150,18 +178,21 @@ namespace Jukebox.Server.DataProviders
         private bool Auth(String email, String pass, out Cookie cookie)
         {
             HttpWebRequest wrGETURL = (HttpWebRequest)System.Net.WebRequest.Create(
-                "http://vk.com/login.php?m=1&email=" + email + "&pass=" + pass
+                "http://login.vk.com/?act=login&email=" + email + "&pass=" + pass
             );
+
             wrGETURL.AllowAutoRedirect = false;
             wrGETURL.Timeout = 100000;
-            string headers = wrGETURL.GetResponse().Headers.ToString();
 
-            HttpWebResponse myHttpWebResponse = (HttpWebResponse)wrGETURL.GetResponse();
-            StreamReader myStreamReadermy = new StreamReader(myHttpWebResponse.GetResponseStream(), Encoding.GetEncoding(1251));
-            string page = myStreamReadermy.ReadToEnd();
+            string location = wrGETURL.GetResponse().Headers["Location"];
 
-            Regex sidregex = new Regex("sid=([a-z0-9]+); exp");
-            Match ssid = sidregex.Match(headers);
+            HttpWebRequest redirectRequest = (HttpWebRequest)System.Net.WebRequest.Create(location);
+            redirectRequest.AllowAutoRedirect = false;
+            redirectRequest.Timeout = 100000;
+            string redirectHeaders = redirectRequest.GetResponse().Headers.ToString();
+
+            Regex sidregex = new Regex("remixsid=([a-z0-9]+); exp");
+            Match ssid = sidregex.Match(redirectHeaders);
             string sid = ssid.Groups[1].Value;
             cookie = new Cookie("remixsid", sid, "/", ".vk.com");
 

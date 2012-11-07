@@ -44,10 +44,11 @@
                                Foreground="Black">
                                     <Run Text="{Binding CurrentTrack, Converter={StaticResource trackToSingerConverter}}" />
                                 </Hyperlink>
+                                <Run Text=" "/>
                             </Paragraph>
                         </RichTextBox>
                         <TextBox VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter={StaticResource trackToTitleConverter}}" MaxWidth="250" Style="{StaticResource TextBoxReadOnlyStyle}"/>
-                        <TextBlock Margin="10,0,0,0" />
+                        <TextBlock Margin="5,0,0,0" />
                         <TextBlock toolkit:DockPanel.Dock="Right" VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter ={StaticResource timeValuesToStringConverter}}"/>
                     </toolkit:DockPanel>
                 </toolkit:Expander.Header>
