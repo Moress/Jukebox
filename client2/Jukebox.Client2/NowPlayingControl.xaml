@@ -14,6 +14,7 @@
         <my:TrackToSingerConverter x:Key="trackToSingerConverter"/>
         <my:TrackToTitleConverter x:Key="trackToTitleConverter"/>
         <my:TrackToSingerLinkConverter x:Key="trackToSingerLinkConverter"/>
+        <my:TrackIsRandomConverter x:Key="trackIsRandomConverter"/>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot">
@@ -42,12 +43,12 @@
                                TextDecorations="None"
                                FontWeight="Bold"
                                Foreground="Black">
-                                    <Run Text="{Binding CurrentTrack, Converter={StaticResource trackToSingerConverter}}" />
+                                    <Run Text="{Binding CurrentTrack, Converter={StaticResource trackToSingerConverter}}" FontStyle="{Binding CurrentTrack, Converter={StaticResource trackIsRandomConverter}}" />
                                 </Hyperlink>
                                 <Run Text=" "/>
                             </Paragraph>
                         </RichTextBox>
-                        <TextBox VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter={StaticResource trackToTitleConverter}}" MaxWidth="250" Style="{StaticResource TextBoxReadOnlyStyle}"/>
+                        <TextBox VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter={StaticResource trackToTitleConverter}}" FontStyle="{Binding CurrentTrack, Converter={StaticResource trackIsRandomConverter}}" MaxWidth="250" Style="{StaticResource TextBoxReadOnlyStyle}"/>
                         <TextBlock Margin="5,0,0,0" />
                         <TextBlock toolkit:DockPanel.Dock="Right" VerticalAlignment="Center" Text="{Binding CurrentTrack, Converter ={StaticResource timeValuesToStringConverter}}"/>
                     </toolkit:DockPanel>

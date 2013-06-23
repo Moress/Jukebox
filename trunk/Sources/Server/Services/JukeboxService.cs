@@ -95,12 +95,14 @@ namespace Jukebox.Server.Services {
 
             int votes = _nextVotes.Count;
 
-            if (votes == Config.GetInstance().VotesToSkip)
+            int votesToSkip = Player.Instance.CurrentTrack.IsRandomlyChosen? 1 : Config.GetInstance().VotesToSkip;
+
+            if (votes == votesToSkip)
             {
                 Player.Instance.Abort();
             }
 
-            return string.Format("Проголосовало {0} из {1}.", votes, Config.GetInstance().VotesToSkip);
+            return string.Format("Проголосовало {0} из {1}.", votes, votesToSkip);
         }
 
         public string Shuffle()

@@ -31,6 +31,9 @@ namespace Jukebox.Server.Models {
         [DataMember]
         public TimeSpan PlayPosition { get; set; }
 
+        [DataMember]
+        public Boolean IsRandomlyChosen { get; set; }
+
         /*[DataMember]
         public bool IsCached { get; set; }*/
 

@@ -27,18 +27,20 @@ namespace Jukebox.Server {
 			}).Start();
 		}
 
-		private void PlayerThread() {
-			Track track = Playlist.Tracks.Where(x => x.State == TrackState.Ready).FirstOrDefault();
-			IsPlaying = CurrentISound == null ? false : !CurrentISound.Finished;
+        private void PlayerThread()
+        {
+            Track track = Playlist.Tracks.Where(x => x.State == TrackState.Ready).FirstOrDefault();
+            IsPlaying = CurrentISound == null ? false : !CurrentISound.Finished;
             if (track != null && !IsPlaying)
             {
-				Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track is playing: " + track);
-				TrackChanged(this, new PlayerEventArgs() { Track = track });
-				Playlist.Tracks.Remove(track);
-				CurrentTrack = track;
+                Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track is playing: " + track);
+                TrackChanged(this, new PlayerEventArgs() { Track = track });
+                Playlist.Tracks.Remove(track);
+                CurrentTrack = track;
                 CurrentTrack.PlayPosition = TimeSpan.FromMilliseconds(0);
                 CurrentISound = Engine.Play2D(Config.GetInstance().CacheDir + track.Id + ".mp3");
-			}
+                IsPlaying = CurrentISound == null ? false : !CurrentISound.Finished;
+            }
             else if (!IsPlaying)
             {
                 CurrentTrack = null;
@@ -56,7 +58,8 @@ namespace Jukebox.Server {
                 Playlist.Tracks.Remove(t);
             }
 
-			foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Unknown)) {
+            foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Unknown))
+            {
                 Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been enqueued: " + t);
                 if (File.Exists(Config.GetInstance().CacheDir + t.GetHash() + ".mp3"))
                 {
@@ -84,23 +87,22 @@ namespace Jukebox.Server {
                         TrackStateChanged(this, new PlayerEventArgs() { Track = t });
                     }).Start();
                 }
-			}
-		}
+            }
 
-		/*private void OnPlaylistChanged(object sender, NotifyCollectionChangedEventArgs e) {
-			if (e.NewItems == null) return;
+            if (!IsPlaying && Playlist.Tracks.Count == 0 && Config.GetInstance().PlayRandomFromCache)
+            {
+                Track t = DataProviderManager.Instance.GetRandomTrack();
+                if (t != null)
+                {
+                    Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track was randomly chosen: {0}", t);
 
-			foreach (Track track in e.NewItems) {
-				Debug.Print("Track enqueued: " + track);
-
-				new Thread(() => {
-					byte[] data = DataProviderManager.Instance.Download(track);
-					File.WriteAllBytes(@"c:\temp\jukebox\" + track.Id + ".mp3", data);
-					track.State C:\Jukebox\repo\trunk\Sources\Server\DataProviders\VKComDataProvider.cs= TrackState.Ready;
-					Debug.Print("Track ready: " + track);
-				}).Start();
-			}
-		}*/
+                    t.State = TrackState.Ready;
+                    t.IsRandomlyChosen = true;
+                    Playlist.Tracks.Add(t);
+                    TrackStateChanged(this, new PlayerEventArgs() { Track = t });
+                }
+            }
+        }
 
 		public event EventHandler<PlayerEventArgs> TrackChanged;
 		public event EventHandler<PlayerEventArgs> TrackStateChanged;

@@ -20,7 +20,7 @@ namespace Jukebox.Server {
 			Debug.Print("========================");
 
             new JukeboxServer().Run();
-			Debug.Print("Jukebox started. Press <anykey> to quit.");
+            Debug.Print("Jukebox started. Press <anykey> to quit.");
 
             while (true)
             {
@@ -47,6 +47,13 @@ namespace Jukebox.Server {
                     case "RESTORE POINTS":
                         {
                             UserManager.Instance.RestorePoints();
+                            Debug.Print("Restored");
+                            break;
+                        }
+                    case "RELOAD CONFIG":
+                        {
+                            Config.GetInstance().HotLoad();
+                            Debug.Print("Reloaded");
                             break;
                         }
                     default: { break; }

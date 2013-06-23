@@ -182,5 +182,29 @@ namespace Jukebox.Client2
         }
     }
 
+    public class TrackIsRandomConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var track = value as Track;
+            if (value == null)
+                return FontStyles.Normal;
+
+            if (track.IsRandomlyChosen)
+            {
+                return FontStyles.Italic;
+            }
+            else
+            {
+                return FontStyles.Normal;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 
 }

@@ -3,6 +3,7 @@ namespace Jukebox.Server.DataProviders {
 	using System.Collections.Generic;
 	using Jukebox.Server.Models;
     using System.Linq;
+    using System;
 
 	class DataProviderManager {
 		public DataProviderManager() {
@@ -33,6 +34,17 @@ namespace Jukebox.Server.DataProviders {
 
             return searchResult;
 		}
+
+        public Track GetRandomTrack()
+        {
+            IDataProvider fsProvider = DataProviders.Where(x => x.GetSourceType() == TrackSource.Cache).FirstOrDefault();
+            if (fsProvider != null)
+            {
+                Track track = (Track)(fsProvider.Search("").OrderBy(x => Guid.NewGuid()).FirstOrDefault());
+                return track;
+            }
+            return null;
+        }
 
 		public byte[] Download(Track track) {
             if (track.Source == TrackSource.VK)
