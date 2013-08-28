@@ -51,6 +51,8 @@ namespace Jukebox.Server
         int downloadTimeout = 60000;
         // play track from cache randomly
         bool playRandomFromCache = true;
+        // debug file
+        string debugFileName = "debug.txt";
 
         public int VotesToSkip
         {
@@ -185,6 +187,19 @@ namespace Jukebox.Server
             set
             {
                 playRandomFromCache = value;
+            }
+        }
+
+
+        public string DebugFileName
+        {
+            get
+            {
+                return debugFileName;
+            }
+            set
+            {
+                debugFileName = value;
             }
         }
 

@@ -27,7 +27,7 @@ namespace Jukebox.Server.Services {
 		// IPolicyService --------------------------------------------------------------------------
 
 		public Stream GetSilverlightPolicy() {
-			Debug.Print("Policy has been sent.");
+            Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Policy has been sent.");
 			if (InstanceContext == null) InstanceContext = OperationContext.Current.InstanceContext;
 			
 			WebOperationContext.Current.OutgoingResponse.ContentType = "application/xml";

@@ -14,13 +14,14 @@ namespace Jukebox.Server {
 		[STAThread]
 		static void Main(string[] args) {
 			Debug.Listeners.Add(new ConsoleTraceListener());
+            Debug.Listeners.Add(new TextWriterTraceListener(Config.GetInstance().DebugFileName));
 			Debug.AutoFlush = true;
 
-			Debug.Print("Brainster's music server");
-			Debug.Print("========================");
+            Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Brainster's music server");
+            Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "========================");
 
             new JukeboxServer().Run();
-            Debug.Print("Jukebox started. Press <anykey> to quit.");
+            Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Jukebox started.");
 
             while (true)
             {
