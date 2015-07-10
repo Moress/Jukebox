@@ -177,14 +177,62 @@ namespace Jukebox.Server.DataProviders
 
         private bool Auth(String email, String pass, out Cookie cookie)
         {
-            HttpWebRequest wrGETURL = (HttpWebRequest)System.Net.WebRequest.Create(
-                "http://login.vk.com/?act=login&email=" + email + "&pass=" + pass
+            HttpWebRequest landingRequest = (HttpWebRequest)System.Net.WebRequest.Create("http://vk.com/");
+            landingRequest.Timeout = 100000;
+            landingRequest.AllowAutoRedirect = false;
+            landingRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
+            var landingResponse = landingRequest.GetResponse();
+            var landingResponseString = new StreamReader(landingResponse.GetResponseStream()).ReadToEnd();
+            var ipHRegexMatch = Regex.Match(landingResponseString, "<input type=\"hidden\" name=\"ip_h\" value=\"(.+)\"");
+            var lgHRegexMatch = Regex.Match(landingResponseString, "<input type=\"hidden\" name=\"lg_h\" value=\"(.+)\"");
+            
+            var ipH = ipHRegexMatch.Result("$1");
+            var lgH = lgHRegexMatch.Result("$1");
+
+            string landingResponseHeaders = landingResponse.Headers.ToString();
+
+            Regex remixlhkRegex = new Regex("remixlhk=([a-z0-9]+); exp");
+            var remixlhk = remixlhkRegex.Match(landingResponseHeaders).Groups[1].Value;
+            
+            HttpWebRequest wrPOSTURL = (HttpWebRequest)System.Net.WebRequest.Create(
+                "http://login.vk.com/?act=login" //&email=" + email + "&pass=" + pass + "&lg_h=" + lgH
             );
-
-            wrGETURL.AllowAutoRedirect = false;
-            wrGETURL.Timeout = 100000;
-
-            string location = wrGETURL.GetResponse().Headers["Location"];
+            wrPOSTURL.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
+            wrPOSTURL.AllowAutoRedirect = false;
+            wrPOSTURL.Timeout = 100000;
+            wrPOSTURL.Method = "POST";
+            wrPOSTURL.Referer = "http://vk.com/";
+            wrPOSTURL.Host = "login.vk.com";
+            wrPOSTURL.Headers.Add("Accept-Language: ru,en-US;q=0.7,en;q=0.3");
+            wrPOSTURL.Headers.Add("DNT: 1");
+            wrPOSTURL.Headers.Add("Accept-Encoding: gzip, deflate");
+            wrPOSTURL.ServicePoint.Expect100Continue = false;
+            
+            wrPOSTURL.Accept = "text/html, application/xhtml+xml, */*";
+            wrPOSTURL.ContentType = "application/x-www-form-urlencoded";
+            wrPOSTURL.CookieContainer = new CookieContainer();
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixlang", "0", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixflash", "15.0.0", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixscreen_depth", "24", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixdt", "14400", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixtst", "5928f8be", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixlhk", remixlhk, "/", ".vk.com"));
+            
+            using (var writer = new StreamWriter(wrPOSTURL.GetRequestStream()))
+            {
+                writer.Write("act=login&");
+                writer.Write("role=al_frame&");
+	            writer.Write("ip_h="+ipH+"&");
+	            writer.Write("lg_h="+lgH+"&");
+                writer.Write("email=" + email + "&");
+                writer.Write("pass=" + pass + "&");
+	            writer.Write("expire=&");
+	            writer.Write("captcha_sid=&");
+	            writer.Write("captcha_key=&");
+                writer.Write("_origin=http%3A%2F%2Fvk.com");
+	        }
+            
+            string location = wrPOSTURL.GetResponse().Headers["Location"];
 
             HttpWebRequest redirectRequest = (HttpWebRequest)System.Net.WebRequest.Create(location);
             redirectRequest.AllowAutoRedirect = false;
