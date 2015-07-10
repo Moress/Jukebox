@@ -53,7 +53,7 @@ namespace Jukebox.Server.DataProviders
                     requestStream.Close();
                 }
 
-                var responseStream = request.GetResponse().GetResponseStream();
+                Stream responseStream = request.GetResponse().GetResponseStream();
                 string content = "";
 
                 using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(1251)))
@@ -73,7 +73,7 @@ namespace Jukebox.Server.DataProviders
                     content = StripHtmlEntities(content);
                     var doc = XDocument.Load(new StringReader(content));
                     XElement audioElement;
-
+                    content = null;
                     var elements = doc.Root.Elements();
 
                     foreach (var divTrack in elements)
@@ -96,13 +96,12 @@ namespace Jukebox.Server.DataProviders
                         track.Id = terms[0].Substring(startId, finishId - startId);
                         track.Uri = new Uri(terms[0]);
 
-                        string titleTag = audioElement.XPathSelectElements("div/table/tr/td/div/span").First().ToString(SaveOptions.DisableFormatting);
+                        string titleTag = audioElement.XPathSelectElement("div/table/tr/td/div/span").ToString(SaveOptions.DisableFormatting);
                         track.Title = PrepareTitle(titleTag);
-                        string singerTag = audioElement.XPathSelectElements("div/table/tr/td/div/b/a").First().ToString(SaveOptions.DisableFormatting);
+                        string singerTag = audioElement.XPathSelectElement("div/table/tr/td/div/b/a").ToString(SaveOptions.DisableFormatting);
                         track.Singer = PrepareTitle(singerTag);
 
-                        var duration = audioElement.XPathSelectElements("div/table/tr/td/div").
-                            Where(el => el.Attribute("class").Value == "duration fl_r").First().Value;
+                        var duration = audioElement.XPathSelectElement("div/table/tr/td/div[@class='duration fl_r']").Value;
 
                         TimeSpan tmp;
                         TimeSpan.TryParse("00:" + duration, out tmp);
@@ -118,9 +117,11 @@ namespace Jukebox.Server.DataProviders
             }
             catch (Exception e)
             {
-                Console.WriteLine("VKComDataProvider error: " + e.Message);
-                Console.WriteLine("Query: " + query);
+                Debug.WriteLine("VKComDataProvider error: " + e.Message);
+                Debug.WriteLine("Query: " + query);
             }
+
+            
 
             return new ReadOnlyCollection<Track>(result);
         }
@@ -165,7 +166,9 @@ namespace Jukebox.Server.DataProviders
         {
             try
             {
-                WebClient c = new WebClient();
+                WebDownload c = new WebDownload();
+                c.Timeout = Config.GetInstance().DownloadTimeout;
+
                 return c.DownloadData(track.Uri);
             }
             catch (Exception e)

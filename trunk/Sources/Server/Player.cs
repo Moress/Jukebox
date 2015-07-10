@@ -20,6 +20,7 @@ namespace Jukebox.Server {
 			Instance = this;
 			Engine = new ISoundEngine(SoundOutputDriver.AutoDetect, SoundEngineOptionFlag.DefaultOptions, Config.GetInstance().DeviceId);
 			Playlist = new Playlist();
+            ItemsInDownloadingQueue = 0;
       
 			//Playlist.Tracks.CollectionChanged += OnPlaylistChanged;
 			new Thread(() => {
@@ -59,10 +60,10 @@ namespace Jukebox.Server {
             }
 
             foreach (Track t in Playlist.Tracks.Where(x => x.State == TrackState.Unknown))
-            {
-                Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been enqueued: " + t);
+            { 
                 if (File.Exists(Config.GetInstance().CacheDir + t.GetHash() + ".mp3"))
                 {
+                    Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been enqueued: " + t);
                     Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been loaded from cache: " + t);
                     t.State = TrackState.Ready;
                     Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has state: {0} {1}", t, t.State);
@@ -70,22 +71,28 @@ namespace Jukebox.Server {
                 }
                 else
                 {
-                    new Thread(() =>
+                    if (ItemsInDownloadingQueue < Config.GetInstance().MaxItemsInDownloadingQueue)
                     {
-                        t.State = TrackState.Downloading;
-                        TrackStateChanged(this, new PlayerEventArgs() { Track = t });
-
-                        byte[] data = DataProviderManager.Instance.Download(t);
-                        if ((data != null) && !File.Exists(Config.GetInstance().CacheDir + t.Id + ".mp3"))
+                        Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has been enqueued: " + t);
+                        new Thread(() =>
                         {
-                            File.WriteAllBytes(Config.GetInstance().CacheDir + t.Id + ".mp3", data);
-                            File.AppendAllText(Config.GetInstance().CacheDir + "hashmap.txt", t.Id + "|" + t.Singer.Trim() + "|" + t.Title.Trim() + "|" + t.Duration.ToString() + "\r\n");
-                        }
-                        t.State = data != null ? TrackState.Ready : TrackState.Failed;
-                        Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has state: {0} {1}", t, t.State);
+                            t.State = TrackState.Downloading;
+                            TrackStateChanged(this, new PlayerEventArgs() { Track = t });
+                            ItemsInDownloadingQueue++;
 
-                        TrackStateChanged(this, new PlayerEventArgs() { Track = t });
-                    }).Start();
+                            byte[] data = DataProviderManager.Instance.Download(t);
+                            if ((data != null) && !File.Exists(Config.GetInstance().CacheDir + t.Id + ".mp3"))
+                            {
+                                File.WriteAllBytes(Config.GetInstance().CacheDir + t.Id + ".mp3", data);
+                                File.AppendAllText(Config.GetInstance().CacheDir + "hashmap.txt", t.Id + "|" + t.Singer.Trim() + "|" + t.Title.Trim() + "|" + t.Duration.ToString() + "\r\n");
+                            }
+                            t.State = data != null ? TrackState.Ready : TrackState.Failed;
+                            Debug.Print("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + "Track has state: {0} {1}", t, t.State);
+
+                            TrackStateChanged(this, new PlayerEventArgs() { Track = t });
+                            ItemsInDownloadingQueue--;
+                        }).Start();
+                    }
                 }
             }
 
@@ -124,6 +131,7 @@ namespace Jukebox.Server {
 		
 		private ISoundEngine Engine { get; set; }
 		public ISound CurrentISound { get; set; }
+        public int ItemsInDownloadingQueue { get; set; }
 
         /// <summary>
         /// Прерывает воспроизведение текущей песни.

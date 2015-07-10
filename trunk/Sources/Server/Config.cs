@@ -53,6 +53,8 @@ namespace Jukebox.Server
         bool playRandomFromCache = true;
         // debug file
         string debugFileName = "debug.txt";
+        // max count of parallel downloading
+        int maxItemsInDownloadingQueue = 5;
 
         public int VotesToSkip
         {
@@ -203,6 +205,18 @@ namespace Jukebox.Server
             }
         }
 
+        public int MaxItemsInDownloadingQueue
+        {
+            get
+            {
+                return maxItemsInDownloadingQueue;
+            }
+            set
+            {
+                maxItemsInDownloadingQueue = value;
+            }
+        }
+
         private bool ExistDevice(string deviceId)
         {
             ISoundDeviceList outputDevices = new ISoundDeviceList(SoundDeviceListType.PlaybackDevice);
@@ -321,6 +335,20 @@ namespace Jukebox.Server
                 (config.AppSettings.Settings["playRandomFromCache"].Value != ""))
             {
                 try { PlayRandomFromCache = Convert.ToBoolean(config.AppSettings.Settings["playRandomFromCache"].Value); }
+                catch { }
+            }
+            if ((config.AppSettings.Settings["debugFileName"] != null) &&
+                (config.AppSettings.Settings["debugFileName"].Value != null) &&
+                (config.AppSettings.Settings["debugFileName"].Value != ""))
+            {
+                try { DebugFileName = config.AppSettings.Settings["debugFileName"].Value; }
+                catch { }
+            }
+            if ((config.AppSettings.Settings["maxItemsInDownloadingQueue"] != null) &&
+                (config.AppSettings.Settings["maxItemsInDownloadingQueue"].Value != null) &&
+                (config.AppSettings.Settings["maxItemsInDownloadingQueue"].Value != ""))
+            {
+                try { MaxItemsInDownloadingQueue = Convert.ToInt32(config.AppSettings.Settings["maxItemsInDownloadingQueue"].Value); }
                 catch { }
             }
 
