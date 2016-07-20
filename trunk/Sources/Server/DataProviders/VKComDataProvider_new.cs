@@ -180,10 +180,10 @@ namespace Jukebox.Server.DataProviders
 
         private bool Auth(String email, String pass, out Cookie cookie)
         {
-            HttpWebRequest landingRequest = (HttpWebRequest)System.Net.WebRequest.Create("http://vk.com/");
+            HttpWebRequest landingRequest = (HttpWebRequest)System.Net.WebRequest.Create("https://new.vk.com/");
             landingRequest.Timeout = 100000;
             landingRequest.AllowAutoRedirect = false;
-            landingRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
+            landingRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
             var landingResponse = landingRequest.GetResponse();
             var landingResponseString = new StreamReader(landingResponse.GetResponseStream()).ReadToEnd();
             var ipHRegexMatch = Regex.Match(landingResponseString, "<input type=\"hidden\" name=\"ip_h\" value=\"(.+)\"");
@@ -195,16 +195,16 @@ namespace Jukebox.Server.DataProviders
             string landingResponseHeaders = landingResponse.Headers.ToString();
 
             Regex remixlhkRegex = new Regex("remixlhk=([a-z0-9]+); exp");
-            var remixlhk = remixlhkRegex.Match(landingResponseHeaders).Groups[1].Value;
+            var remixlhk = remixlhkRegex.Match(landingResponseHeaders).NextMatch().Groups[1].Value;
             
             HttpWebRequest wrPOSTURL = (HttpWebRequest)System.Net.WebRequest.Create(
                 "http://login.vk.com/?act=login" //&email=" + email + "&pass=" + pass + "&lg_h=" + lgH
             );
-            wrPOSTURL.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
+            wrPOSTURL.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
             wrPOSTURL.AllowAutoRedirect = false;
             wrPOSTURL.Timeout = 100000;
             wrPOSTURL.Method = "POST";
-            wrPOSTURL.Referer = "http://vk.com/";
+            wrPOSTURL.Referer = "https://new.vk.com/";
             wrPOSTURL.Host = "login.vk.com";
             wrPOSTURL.Headers.Add("Accept-Language: ru,en-US;q=0.7,en;q=0.3");
             wrPOSTURL.Headers.Add("DNT: 1");
@@ -215,10 +215,16 @@ namespace Jukebox.Server.DataProviders
             wrPOSTURL.ContentType = "application/x-www-form-urlencoded";
             wrPOSTURL.CookieContainer = new CookieContainer();
             wrPOSTURL.CookieContainer.Add(new Cookie("remixlang", "0", "/", ".vk.com"));
-            wrPOSTURL.CookieContainer.Add(new Cookie("remixflash", "15.0.0", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixrefkey", "b99ef30c41aa2e48fc", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("_ym_uid", "1463544547390306689", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixstid", "1592289695_fc0ec279667da8de94", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("_ym_isad", "2", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixflash", "22.0.0", "/", ".vk.com"));
             wrPOSTURL.CookieContainer.Add(new Cookie("remixscreen_depth", "24", "/", ".vk.com"));
             wrPOSTURL.CookieContainer.Add(new Cookie("remixdt", "14400", "/", ".vk.com"));
-            wrPOSTURL.CookieContainer.Add(new Cookie("remixtst", "5928f8be", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixtst", "457fbc51", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("remixseenads", "0", "/", ".vk.com"));
+            wrPOSTURL.CookieContainer.Add(new Cookie("t", "1f6850662e05f3b274c1a56f", "/", ".vk.com"));
             wrPOSTURL.CookieContainer.Add(new Cookie("remixlhk", remixlhk, "/", ".vk.com"));
             
             using (var writer = new StreamWriter(wrPOSTURL.GetRequestStream()))
@@ -232,7 +238,7 @@ namespace Jukebox.Server.DataProviders
 	            writer.Write("expire=&");
 	            writer.Write("captcha_sid=&");
 	            writer.Write("captcha_key=&");
-                writer.Write("_origin=http%3A%2F%2Fvk.com");
+                writer.Write("_origin=https%3A%2F%2Fnew.vk.com");
 	        }
             
             string location = wrPOSTURL.GetResponse().Headers["Location"];
