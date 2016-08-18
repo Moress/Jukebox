@@ -37,32 +37,11 @@ namespace Jukebox.Server.DataProviders
                     }
                 }
 
-                var url = "http://vk.com/al_search.php";
-
-                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                request.CookieContainer = new CookieContainer();
-                request.CookieContainer.Add(_cookie);
-                request.ContentType = @"application/x-www-form-urlencoded";
-                request.Method = "POST";
-
+                string url = "http://vk.com/al_search.php";
                 string parameters = "al=1&c[q]=" + HttpUtility.UrlEncode(query).ToUpper() + "&c[section]=audio";
-                byte[] message = Encoding.UTF8.GetBytes(parameters);
-                using (Stream requestStream = request.GetRequestStream())
-                {
-                    requestStream.Write(message, 0, message.Length);
-                    requestStream.Close();
-                }
 
-                Stream responseStream = request.GetResponse().GetResponseStream();
-                string content = "";
-
-                using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(1251)))
-                {
-                    content = reader.ReadToEnd();
-                }
-
-
-
+                string content = MakeRequest(url, parameters, _cookie);
+                
                 string techInfo = @"(<!--.*<!>|<!--.*->|<!>)";
                 content = Regex.Replace(content, techInfo, String.Empty);
 
@@ -78,46 +57,37 @@ namespace Jukebox.Server.DataProviders
 
                     foreach (var divTrack in elements)
                     {
-                        var track = new Track();
-                        audioElement = divTrack;
-
-                        if (audioElement.FirstAttribute.Value == "search_more_results")
+                        try
                         {
-                            break;
+                            var track = new Track();
+                            audioElement = divTrack;
+
+                            if (audioElement.FirstAttribute.Value == "search_more_results")
+                            {
+                                break;
+                            }
+
+                            var audioData = audioElement.Attribute("data-audio").Value.Split(new string[] { " quot;," }, StringSplitOptions.None);
+                            track.Uri = new Uri(audioElement.Attribute("data-full-id").Value, UriKind.Relative);
+                            track.Title = PrepareDataLine(audioData[3]);
+                            track.Singer = PrepareDataLine(audioData[4]);
+                            track.Duration = TimeSpan.FromSeconds(Convert.ToDouble(audioData[5].Split(',')[0]));
+                            track.Source = TrackSource.VK;
+
+                            track.Id = track.GetHash();
+
+                            result.Add(track);
                         }
-
-                        var trackUri = audioElement.XPathSelectElement("div/table/tr/td/input").Attribute("value").Value;
-
-                        var terms = trackUri.Replace("\'", "").Split(',');
-
-                        var startId = terms[0].IndexOf("audio/") + "audio/".Length;
-                        var finishId = terms[0].IndexOf(".mp3");
-
-                        track.Id = terms[0].Substring(startId, finishId - startId);
-                        track.Uri = new Uri(terms[0]);
-
-                        string titleTag = audioElement.XPathSelectElement("div/table/tr/td/div/span").ToString(SaveOptions.DisableFormatting);
-                        track.Title = PrepareTitle(titleTag);
-                        string singerTag = audioElement.XPathSelectElement("div/table/tr/td/div/b/a").ToString(SaveOptions.DisableFormatting);
-                        track.Singer = PrepareTitle(singerTag);
-
-                        var duration = audioElement.XPathSelectElement("div/table/tr/td/div[@class='duration fl_r']").Value;
-
-                        TimeSpan tmp;
-                        TimeSpan.TryParse("00:" + duration, out tmp);
-                        track.Duration = tmp;
-
-                        track.Source = TrackSource.VK;
-
-                        track.Id = track.GetHash();
-
-                        result.Add(track);
+                        catch (Exception innerE)
+                        {
+                            Debug.WriteLine("VKComDataProvider (track parse): " + innerE.Message);
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine("VKComDataProvider error: " + e.Message);
+                Debug.WriteLine("VKComDataProvider (global): " + e.Message);
                 Debug.WriteLine("Query: " + query);
             }
 
@@ -126,13 +96,36 @@ namespace Jukebox.Server.DataProviders
             return new ReadOnlyCollection<Track>(result);
         }
 
-        string PrepareTitle(string content)
+        string PrepareDataLine(string content)
         {
-            string patternTwoTags = "</span><span .*?>";
-            content = Regex.Replace(content, patternTwoTags, " ");
-            string patternTag = "<.*?>";
-            content = Regex.Replace(content, patternTag, String.Empty);
+            content = content.Replace("quot;", "");
             content = content.Trim();
+            return content;
+        }
+
+        string MakeRequest(string url, string parameters, Cookie cookie)
+        {
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            request.CookieContainer = new CookieContainer();
+            request.CookieContainer.Add(cookie);
+            request.ContentType = @"application/x-www-form-urlencoded";
+            request.Method = "POST";
+
+            byte[] message = Encoding.UTF8.GetBytes(parameters);
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(message, 0, message.Length);
+                requestStream.Close();
+            }
+
+            Stream responseStream = request.GetResponse().GetResponseStream();
+            string content = "";
+
+            using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(1251)))
+            {
+                content = reader.ReadToEnd();
+            }
+
             return content;
         }
 
@@ -166,6 +159,15 @@ namespace Jukebox.Server.DataProviders
         {
             try
             {
+                string url = "http://vk.com/al_audio.php";
+                string parameters = "act=reload_audio&al=1&ids=" + HttpUtility.UrlEncode(track.Uri.OriginalString);
+
+                string content = MakeRequest(url, parameters, _cookie);
+
+                var trackUrl = content.Split(new string[] { "<!json>[[" }, StringSplitOptions.None)[1].Split(',')[2];
+                trackUrl = Regex.Unescape(url).Replace("\"", "");
+                track.Uri = new Uri(trackUrl);
+
                 WebDownload c = new WebDownload();
                 c.Timeout = Config.GetInstance().DownloadTimeout;
 
@@ -180,7 +182,7 @@ namespace Jukebox.Server.DataProviders
 
         private bool Auth(String email, String pass, out Cookie cookie)
         {
-            HttpWebRequest landingRequest = (HttpWebRequest)System.Net.WebRequest.Create("https://new.vk.com/");
+            HttpWebRequest landingRequest = (HttpWebRequest)System.Net.WebRequest.Create("https://vk.com/");
             landingRequest.Timeout = 100000;
             landingRequest.AllowAutoRedirect = false;
             landingRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
@@ -204,7 +206,7 @@ namespace Jukebox.Server.DataProviders
             wrPOSTURL.AllowAutoRedirect = false;
             wrPOSTURL.Timeout = 100000;
             wrPOSTURL.Method = "POST";
-            wrPOSTURL.Referer = "https://new.vk.com/";
+            wrPOSTURL.Referer = "https://vk.com/";
             wrPOSTURL.Host = "login.vk.com";
             wrPOSTURL.Headers.Add("Accept-Language: ru,en-US;q=0.7,en;q=0.3");
             wrPOSTURL.Headers.Add("DNT: 1");
@@ -238,7 +240,7 @@ namespace Jukebox.Server.DataProviders
 	            writer.Write("expire=&");
 	            writer.Write("captcha_sid=&");
 	            writer.Write("captcha_key=&");
-                writer.Write("_origin=https%3A%2F%2Fnew.vk.com");
+                writer.Write("_origin=https%3A%2F%2Fvk.com");
 	        }
             
             string location = wrPOSTURL.GetResponse().Headers["Location"];
