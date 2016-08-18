@@ -103,22 +103,9 @@ namespace Jukebox.Server.DataProviders
             return content;
         }
 
-        string MakeRequest(string url, string parameters, Cookie cookie)
+        string MakeRequest(string url, string parameters, Cookie cookie, string method = "POST")
         {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer.Add(cookie);
-            request.ContentType = @"application/x-www-form-urlencoded";
-            request.Method = "POST";
-
-            byte[] message = Encoding.UTF8.GetBytes(parameters);
-            using (Stream requestStream = request.GetRequestStream())
-            {
-                requestStream.Write(message, 0, message.Length);
-                requestStream.Close();
-            }
-
-            Stream responseStream = request.GetResponse().GetResponseStream();
+            Stream responseStream = MakeRequestStream(url, parameters, cookie, method);
             string content = "";
 
             using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(1251)))
@@ -127,6 +114,24 @@ namespace Jukebox.Server.DataProviders
             }
 
             return content;
+        }
+
+        Stream MakeRequestStream(string url, string parameters, Cookie cookie, string method = "POST")
+        {
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            request.CookieContainer = new CookieContainer();
+            request.CookieContainer.Add(cookie);
+            request.ContentType = @"application/x-www-form-urlencoded";
+            request.Method = method;
+
+            byte[] message = Encoding.UTF8.GetBytes(parameters);
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(message, 0, message.Length);
+                requestStream.Close();
+            }
+
+            return request.GetResponse().GetResponseStream();
         }
 
         string StripHtmlEntities(string content)
@@ -165,13 +170,30 @@ namespace Jukebox.Server.DataProviders
                 string content = MakeRequest(url, parameters, _cookie);
 
                 var trackUrl = content.Split(new string[] { "<!json>[[" }, StringSplitOptions.None)[1].Split(',')[2];
-                trackUrl = Regex.Unescape(url).Replace("\"", "");
+                trackUrl = Regex.Unescape(trackUrl).Replace("\"", "");
                 track.Uri = new Uri(trackUrl);
 
-                WebDownload c = new WebDownload();
-                c.Timeout = Config.GetInstance().DownloadTimeout;
+                WebDownload downloader = new WebDownload();
+                downloader.Timeout = Config.GetInstance().DownloadTimeout;
 
-                return c.DownloadData(track.Uri);
+                Stream trackStream = downloader.OpenRead(track.Uri);
+                MemoryStream resultStream = new MemoryStream();
+
+                byte[] buffer = new byte[4096];
+                while (trackStream.CanRead)
+                {
+                    Array.Clear(buffer, 0, buffer.Length);
+                    int bytesRead = trackStream.Read(buffer, 0, buffer.Length);
+
+                    if (bytesRead == 0)
+                    {
+                        break;
+                    }
+
+                    resultStream.Write(buffer, 0, bytesRead);
+                }
+
+                return resultStream.ToArray();
             }
             catch (Exception e)
             {
