@@ -39,6 +39,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\irrKlang.NET4.dll</HintPath>
     </Reference>
+    <Reference Include="Jint">
+      <HintPath>..\..\Dependencies\Jint.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />

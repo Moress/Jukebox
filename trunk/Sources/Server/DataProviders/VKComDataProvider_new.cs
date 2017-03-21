@@ -11,6 +11,7 @@ using System.Web;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Diagnostics;
+using Jint;
 
 namespace Jukebox.Server.DataProviders
 {
@@ -171,6 +172,9 @@ namespace Jukebox.Server.DataProviders
 
                 var trackUrl = content.Split(new string[] { "<!json>[[" }, StringSplitOptions.None)[1].Split(',')[2];
                 trackUrl = Regex.Unescape(trackUrl).Replace("\"", "");
+                Jint.Engine engine = new Engine()
+                    .Execute(getRevealScript());
+                trackUrl = engine.Invoke("reveal", trackUrl).ToString();
                 track.Uri = new Uri(trackUrl);
 
                 WebDownload downloader = new WebDownload();
@@ -282,6 +286,63 @@ namespace Jukebox.Server.DataProviders
                 return false;
             }
             return true;
+        }
+
+        private String getRevealScript()
+        {
+            return @"var res = function(t, i) { 
+                  ""use strict""; 
+
+                  function e(t) {
+                   if (~t.indexOf(""audio_api_unavailable"")) {
+                    var i = t.split(""?extra="")[1].split(""#""),
+                     e = o(i[1]);
+                    if (i = o(i[0]), !e || !i) return t;
+                    e = e.split(String.fromCharCode(9));
+                    for (var a, r, l = e.length; l--;) {
+                     if (r = e[l].split(String.fromCharCode(11)), a = r.splice(0, 1, i)[0], !s[a]) return t;
+                     i = s[a].apply(null, r)
+                    }
+                    if (i && ""http"" === i.substr(0, 4)) return i
+                   }
+                   return t
+                  }
+
+                  function o(t) {
+                   if (!t || t.length % 4 == 1) return !1;
+                   for (var i, e, o = 0, s = 0, r = """"; e = t.charAt(s++);){ 
+                    e = a.indexOf(e), ~e && 
+                    (i = o % 4 ? 64 * i + e : e, o++ % 4) && (r += String.fromCharCode(255 & i >> (-2 * o & 6)));
+
+                   }
+                   return r
+                  }
+  
+                  var a = ""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN0PQRSTUVWXYZO123456789+/="",
+                   s = {
+                    v: function(t) {
+                     return t.split("""").reverse().join("""")
+                    },
+                    r: function(t, i) {
+                     t = t.split("""");
+                     for (var e, o = a + a, s = t.length; s--;) e = o.indexOf(t[s]), ~e && (t[s] = o.substr(e - i, 1));
+                     return t.join("""")
+                    },
+                    x: function(t, i) {
+                     var e = [];
+                     i = i.charCodeAt(0);
+                     var temp_arr = t.split("""");
+                     for (var temp_idx=0;temp_idx < temp_arr.length; temp_idx++) {
+                      var elem = temp_arr[temp_idx];
+                      e.push(String.fromCharCode(elem.charCodeAt(0) ^ i));
+                     }
+                     return e.join("""");
+                    }
+                  }
+
+                  return e;
+                }
+                var reveal = res();";
         }
 
     }
