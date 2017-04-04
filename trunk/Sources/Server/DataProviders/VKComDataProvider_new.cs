@@ -70,9 +70,9 @@ namespace Jukebox.Server.DataProviders
 
                             var audioData = audioElement.Attribute("data-audio").Value.Split(new string[] { " quot;," }, StringSplitOptions.None);
                             track.Uri = new Uri(audioElement.Attribute("data-full-id").Value, UriKind.Relative);
-                            track.Title = PrepareDataLine(audioData[3]);
-                            track.Singer = PrepareDataLine(audioData[4]);
-                            track.Duration = TimeSpan.FromSeconds(Convert.ToDouble(audioData[5].Split(',')[0]));
+                            track.Title = PrepareDataLine(audioData[1]);
+                            track.Singer = PrepareDataLine(audioData[2]);
+                            track.Duration = TimeSpan.FromSeconds(Convert.ToDouble(audioData[3].Split(',')[0]));
                             track.Source = TrackSource.VK;
 
                             track.Id = track.GetHash();
